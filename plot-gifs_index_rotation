@@ -1,0 +1,138 @@
+#!/bin/bash
+
+INPUTFILE=$1
+PSFILE=$2
+
+x=$3
+y=$4
+z=$5
+minx=$6
+maxx=$7
+miny=$8
+maxy=$9
+minz=${10}
+maxz=${11}
+name_x=${12}
+name_y=${13}
+name_z=${14}
+t=${15}
+tmin=${16}
+tmax=${17}
+tname=${18}
+dx=${19}
+dy=${20}
+dz=${21}
+time=${22}
+
+
+
+{
+cat <<GnuplotScript
+#cat <<EOF
+
+x=${x}
+y=${y}
+z=${z}
+
+xmin=${minx}
+xmax=${maxx}
+
+ymin=${miny}
+ymax=${maxy}
+
+zmin=${minz}
+zmax=${maxz}
+
+#xname=${name_x}
+#yname=${name_y}
+#zname=${name_z}
+
+t=${t}
+tmin=${tmin}
+tmax=${tmax}
+#tname=${tname}
+dx=${dx}
+dy=${dy}
+dz=${dz}
+
+time=${time}
+
+indata = '${INPUTFILE}'
+
+set encoding utf8
+set terminal gif animate delay time loop 0 optimize size 800,600
+#set terminal gif animate delay 5 loop 0 optimize size 800,600
+#set terminal pngcairo enhanced font "Symbola,16.0" size 540,420
+#set terminal epscairo color size 14,11.5 enhanced font "Symbola,36" solid
+#set terminal epslatex standalone
+#set terminal postscript enhanced
+#set size 10.0,8
+
+filetype = ".gif"
+
+set key noautotitle
+set angles degrees
+#set view map
+set palette rgbformulae 33,13,10 #30,31,32 #33,13,10
+set xrange [xmin:xmax]
+set yrange [ymin:ymax]
+set zrange [zmin:zmax]
+set xlabel '${name_x}'
+set ylabel '${name_y}'
+set zlabel '${name_z}'
+
+boxsize = 1
+sunsize = 2
+
+set cbrange [tmin:tmax]
+set cblabel '${tname}'
+
+set xtics dx
+set ytics dy
+set ztics dz
+set grid x
+set grid y
+set grid z
+	
+set output '${PSFILE}'
+	
+set view 0, 0  # rot_x,rot_z in degrees
+set title sprintf("view 0, 0")
+
+splot indata using x:y:z:t linecolor palette pt 5 ps 0.5
+
+set view 0, 0  # rot_x,rot_z in degrees
+set title sprintf("view 0, 0")
+
+splot indata using x:y:z:t linecolor palette pt 5 ps 0.5
+
+i=0
+while (i<175) {
+
+  	if(i<80){
+  	  	set view i, 0  # rot_x,rot_z in degrees
+  	  	set title sprintf("view %f, 0",i)
+  	  	
+  	  	splot indata using x:y:z:t linecolor palette pt 7 ps 0.5
+  	 }else{
+		set view 80, i-80  # rot_x,rot_z in degrees
+		set title sprintf("view 80, %f",i-80)
+		
+		splot indata using x:y:z:t linecolor palette pt 7 ps 0.5	
+	}	
+	i = i + 5;			
+}
+
+set view 80, 90 
+set title sprintf("view 80, 90")
+splot indata using x:y:z:t linecolor palette pt 7 ps 0.5	
+splot indata using x:y:z:t linecolor palette pt 7 ps 0.5	
+splot indata using x:y:z:t linecolor palette pt 7 ps 0.5	
+splot indata using x:y:z:t linecolor palette pt 7 ps 0.5	
+splot indata using x:y:z:t linecolor palette pt 7 ps 0.5	
+
+
+
+
+GnuplotScript
+} | gnuplot 

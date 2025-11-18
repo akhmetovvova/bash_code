@@ -1,0 +1,79 @@
+#!/bin/bash
+
+infile=$1
+outdir=$2
+
+xmin=$3
+xmax=$4
+ymin=$5
+ymax=$6
+zmin=$7
+zmax=$8
+
+#./create_gifs res_3d_age_less_1mln_bin.txt ./gifs -10 10 -12 12 -2 2
+#2d_kinematic cut_data_xyz.txt 1 2 3 4 5 6 1 1 -10 10 0.1 -10 10 0.1 -3 3 0.1 0 3 1 8.249 0.0208 1.0 0 9.5 250.7 8.56 500000 8 0 0 0 5 > res_OBA_dr3_ind_0.1_R_1.0.txt 2>log_OBA_dr3_ind_0.1_R_1.0.err
+#1
+#i	j	k	R	Theta	X	Y	Z	Vr	Vth	Vx	Vy	Vz	var_Vx	var_Vy	var_Vz	Vx	eVx	Vy	eVy	Vz	eVz	w1	ew1	w2	ew2	w3	ew3	M23	eM23	M13	eM13	M12	eM12	M11	eM11	M22	eM22	M33	eM33	OM_count	OM_sig
+#43
+#Vr	Vth	Vz	sigVr	sigVth	sigVz	dVrdr	e_dVrdr	dVrdth	e_dVrdth	dVrdz	e_dVrdz	dVthdr	e_dVthdr	dVthdth	e_dVthdth	dVthdz	e_dVthdz	dVzdr	e_dVzdr	dVzdth	e_dVzdth	dVzdz	e_dVzdz	Count
+
+
+#XY Z
+plot-gifs_index $infile $outdir/VR_xy.gif 6 7 43 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc VR,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+plot-gifs_index $infile $outdir/Vtheta_xy.gif 6 7 44 $xmin $xmax $ymin $ymax -250 -150 X,kpc Y,kpc V_theta,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+plot-gifs_index $infile $outdir/Vz_xy.gif 6 7 45 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc Vz,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+
+
+plot-gifs_index $infile $outdir/dVRdR_xy.gif 6 7 49 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dVR/dR,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+plot-gifs_index $infile $outdir/dVRdth_xy.gif 6 7 51 $xmin $xmax $ymin $ymax -40 40 X,kpc Y,kpc dVR/dtheta,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+plot-gifs_index $infile $outdir/dVRdz_xy.gif 6 7 53 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dVR/dR,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+
+plot-gifs_index $infile $outdir/dVthdR_xy.gif 6 7 55 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dV_theta/dR,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+plot-gifs_index $infile $outdir/dVthdth_xy.gif 6 7 57 $xmin $xmax $ymin $ymax -40 40 X,kpc Y,kpc dV_theta/dtheta,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+plot-gifs_index $infile $outdir/dVthdz_xy.gif 6 7 59 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc dV_theta/dR,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+
+plot-gifs_index $infile $outdir/dVzdR_xy.gif 6 7 61 $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc dVz/dR,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+plot-gifs_index $infile $outdir/dVzdth_xy.gif 6 7 63 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc dVz/dtheta,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+plot-gifs_index $infile $outdir/dVzdz_xy.gif 6 7 65 $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc dVz/dR,"km s^{-1}" 3 0 40 z -2 0.1 1 2 2 50
+
+#YZ X
+plot-gifs_index $infile $outdir/VR_yz.gif 7 8 43 $ymin $ymax $zmin $zmax -20 20 Y,kpc Z,kpc VR,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+plot-gifs_index $infile $outdir/Vtheta_yz.gif 7 8 44 $ymin $ymax $zmin $zmax -250 -150 Y,kpc Z,kpc V_theta,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+plot-gifs_index $infile $outdir/Vz_yz.gif 7 8 45 $ymin $ymax $zmin $zmax -10 10 Y,kpc Z,kpc  Vz,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+
+
+plot-gifs_index $infile $outdir/dVRdR_yz.gif 7 8 49 $ymin $ymax $zmin $zmax -10 10 Y,kpc Z,kpc dVR/dR,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+plot-gifs_index $infile $outdir/dVRdth_yz.gif 7 8 51 $ymin $ymax $zmin $zmax -40 40 Y,kpc Z,kpc dVR/dtheta,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+plot-gifs_index $infile $outdir/dVRdz_yz.gif 7 8 53 $ymin $ymax $zmin $zmax -10 10 Y,kpc Z,kpc dVR/dR,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+
+plot-gifs_index $infile $outdir/dVthdR_yz.gif 7 8 55 $ymin $ymax $zmin $zmax -10 10 Y,kpc Z,kpc dV_theta/dR,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+plot-gifs_index $infile $outdir/dVthdth_yz.gif 7 8 57 $ymin $ymax $zmin $zmax -40 40 Y,kpc Z,kpc  dV_theta/dtheta,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+plot-gifs_index $infile $outdir/dVthdz_yz.gif 7 8 59 $ymin $ymax $zmin $zmax -20 20 Y,kpc Z,kpc dV_theta/dR,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+ 
+plot-gifs_index $infile $outdir/dVzdR_yz.gif 7 8 61 $ymin $ymax $zmin $zmax -5 5 Y,kpc Z,kpc dVz/dR,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+plot-gifs_index $infile $outdir/dVzdth_yz.gif 7 8 63 $ymin $ymax $zmin $zmax -20 20 Y,kpc Z,kpc dVz/dtheta,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+plot-gifs_index $infile $outdir/dVzdz_yz.gif 7 8 65 $ymin $ymax $zmin $zmax -5 5 Y,kpc Z,kpc dVz/dR,"km s^{-1}" 1 0 200 X -10 0.1 0 1 0.5 50
+
+
+#Theta Z R
+#plot-gifs_index $infile $outdir/VR_thz.gif 5 8 43 90 270 $zmin $zmax -20 20 Theta,degree Z,kpc VR,"km s^{-1}" 1 20 180 R -10 0.1 0 30 0.5 50
+#plot-gifs_index $infile $outdir/Vtheta_thz.gif 5 8 44 90 270 $zmin $zmax -250 -150 Theta,degree Z,kpc V_theta,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+#plot-gifs_index $infile $outdir/Vz_thz.gif 5 8 45 90 270 $zmin $zmax -10 10 Theta,degree Z,kpc  Vz,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+
+
+#plot-gifs_index $infile $outdir/dVRdR_thz.gif 5 8 49 90 270 $zmin $zmax -10 10 Theta,degree Z,kpc dVR/dR,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+#plot-gifs_index $infile $outdir/dVRdth_thz.gif 5 8 51 90 270 $zmin $zmax -40 40 Theta,degree Z,kpc dVR/dtheta,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+#plot-gifs_index $infile $outdir/dVRdz_thz.gif 5 8 53 90 270 $zmin $zmax -10 10 Theta,degree Z,kpc dVR/dR,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+
+#plot-gifs_index $infile $outdir/dVthdR_thz.gif 5 8 55 90 270 $zmin $zmax -10 10 Theta,degree Z,kpc dV_theta/dR,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+#plot-gifs_index $infile $outdir/dVthdth_thz.gif 5 8 57 90 270 $zmin $zmax -40 40 Theta,degree Z,kpc  dV_theta/dtheta,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+#plot-gifs_index $infile $outdir/dVthdz_thz.gif 5 8 59 90 270 $zmin $zmax -20 20 Theta,degree Z,kpc dV_theta/dR,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+
+#plot-gifs_index $infile $outdir/dVzdR_thz.gif 5 8 61 90 270 $zmin $zmax -5 5 Theta,degree Z,kpc dVz/dR,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+#plot-gifs_index $infile $outdir/dVzdth_thz.gif 5 8 63 90 270 $zmin $zmax -20 20 Theta,degree Z,kpc dVz/dtheta,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+#plot-gifs_index $infile $outdir/dVzdz_thz.gif 5 8 65 90 270 $zmin $zmax -5 5 Theta,degree Z,kpc dVz/dR,"km s^{-1}" 1 20 180 X -10 0.1 0 30 0.5 50
+
+
+
+
+

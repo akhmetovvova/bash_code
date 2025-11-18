@@ -1,0 +1,38 @@
+#!/bin/bash
+
+INPUTFILE=$1
+ra=$2
+dec=$3
+plx=$4
+pmra=$5
+pmdec=$6
+eplx=$7
+epmra=$8
+epmdec=$9
+sigplx=${10}
+sigpmra=${11}
+sigpmdec=${12}
+sigeplx=${13}
+sigepmra=${14}
+sigepmdec=${15}
+count=${16}
+
+
+#pixel
+#Phi_healpix	Theta_healpix	Phi	Theta	R	Vphi	Vtheta	Vr	sig_Vphi	sig_Vtheta	sig_Vr	eVphi	eVtheta	eVr	sig_eVphi	sig_eVtheta	sig_eVr	Corr	sig_corr	Nobjects
+
+plot_aitof_map $INPUTFILE eq_mura_$INPUTFILE.png $ra $dec $pmra 0.2 1 pmra,mas/yr
+plot_aitof_map $INPUTFILE eq_mude_$INPUTFILE.png $ra $dec $pmdec 0.2 1 pmdec,mas/yr
+plot_aitof_map $INPUTFILE eq_plx_$INPUTFILE.png $ra $dec $plx 0.2 1 plx,mas/yr
+plot_aitof_map $INPUTFILE eq_sigmura_$INPUTFILE.png $ra $dec $sigpmra 0.5 1 sigpmra,mas/yr
+plot_aitof_map $INPUTFILE eq_sigmude_$INPUTFILE.png $ra $dec $sigpmdec 0.5 1 sigpmdec,mas/yr
+plot_aitof_map $INPUTFILE eq_sigplx_$INPUTFILE.png $ra $dec $sigplx 1.0 1 sigplx,mas/yr
+plot_aitof_map $INPUTFILE eq_er_mura_$INPUTFILE.png $ra $dec $epmra 0.4 1 erpmra,mas/yr
+plot_aitof_map $INPUTFILE eq_er_mude_$INPUTFILE.png $ra $dec $epmdec 0.4 1 erpmdec,mas/yr
+plot_aitof_map $INPUTFILE eq_er_plx_$INPUTFILE.png $ra $dec $eplx 0.6 1 erplx,mas/yr
+plot_aitof_map $INPUTFILE eq_sig_er_mura_$INPUTFILE.png $ra $dec $sigepmra 0.5 1 sigErpmra,mas/yr
+plot_aitof_map $INPUTFILE eq_sig_er_mude_$INPUTFILE.png $ra $dec $sigepmdec 0.5 1 sigErpmdec,mas/yr
+plot_aitof_map $INPUTFILE eq_sig_er_plx_$INPUTFILE.png $ra $dec $sigeplx 0.5 1 sigErplx,mas/yr
+
+plot_aitof_map $INPUTFILE eq_density_$INPUTFILE.png $ra $dec $count 5000 1 Density
+

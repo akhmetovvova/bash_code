@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#VSH_correcting QSOsRun168_cut_mu_er3.tsv ZVSHin_QSOsRun168_cut_mu_er3_t1s1.res 3 4 6 7 5 400000 0
+
+name_file=$1
+name_param=$2
+cra=$3
+cdec=$4
+cpmra=$5
+cpmde=$6
+cplx=$7
+Nmax=$8
+rad=$9
+
+nparam=$(wc -l $name_param | awk ' {print $1-1}')
+echo $nparam
+VSH_modeling_for_stars $name_param $nparam $Nmax $cra $cdec $cpmra $cpmde $cplx $rad $name_file > cor_$name_file

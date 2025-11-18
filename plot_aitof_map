@@ -1,0 +1,81 @@
+#!/bin/bash
+
+#./plot_aitof_map pixel.dat test.png 1 2 4 0.05 3 mul,mas/yr
+# pixel.dat - coordinates in radian
+
+INPUTFILE=$1
+PSFILE=$2
+x=$3
+y=$4
+z=$5
+deep=$6
+PS=$7
+name=$8
+
+if [ "${deep}" == "" ] ;
+then
+   deep=1000
+fi
+
+if [ "${PS}" == "" ] ;
+then
+   PS=0.5
+fi
+
+{
+cat <<GnuplotScript
+
+#set encoding utf8
+set terminal pngcairo size 1600,800 enhanced background rgb 'white' font "Symbola,22" solid
+#set terminal postscript enhanced landscape color size 10,7 background rgb 'white' font "Arial,14" solid
+set output '${PSFILE}'
+
+  set key off
+
+  # WARNING: datafile separator must be the same in both INPUTFILE and GRID
+  # set datafile separator '|'
+
+  wrap(l)  = l < pi ? l : l - 2 * pi
+  hax(l,b) = cos(b) * sin(wrap(l) / 2) / sqrt(1 + cos(b) * cos(wrap(l) / 2))
+  hay(l,b) = sin(b)/sqrt(1+cos(b)*cos(wrap(l)/2))
+  max(x,y) = x>y?x:y
+  min(x,y) = x<y?x:y
+  sat(x,xmax) = x<-xmax? -xmax : x > xmax ? xmax : x;
+
+
+  #set xypl 0
+  set xrange [-2:2]
+  set yrange [-1:1]
+
+  unset xti
+  unset yti
+  unset zti
+
+  set view map
+  set palette rgbformulae 33,13,10
+  set size 1,1
+  set lmargin at screen 0.02
+  set rmargin at screen 0.85
+  set tmargin at screen 0.9
+  set bmargin at screen 0.05
+  set border 0
+
+  set title "${name}"
+      set for [dec=-90:90:45] label sprintf("%d°",dec) tc rgb "black" font ",16" at 0,(dec/90.0)
+      set for [ra=-180:180:90] label sprintf("%d°",ra) tc rgb "black" font ",16" at (ra/90.0),0
+
+  set multiplot
+
+  splot '${INPUTFILE}' \
+    using (2*hax(\$$x,\$$y)):(hay(\$$x,\$$y)):(0):(sat(\$$z,${deep})) with points lc palette pt 5 ps ${PS} notitle
+    plot '< aitof-grid --xgrid=15deg --ygrid=15deg' using (2*\$1):2 with lines lt 1 lc rgb 'black' lw 0.2 notitle
+
+
+  unset multiplot
+GnuplotScript
+} | gnuplot #&& ps2pdf ${PSFILE}
+
+#$convert ${PSFILE} ${PSFILE}.png
+
+
+

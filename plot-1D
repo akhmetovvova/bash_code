@@ -1,0 +1,67 @@
+#!/bin/bash
+
+INPUTFILE=$1
+PSFILE=$2
+
+xy1=$3
+xy2=$4
+xy3=$5
+xy4=$6
+minx=$7
+maxx=$8
+miny=$9
+maxy=${10}
+name_x=${11}
+name_y=${12}
+dx=${13}
+dy=${14}
+name_legend1=${15}
+name_legend2=${16}
+name_legend3=${17}
+name_legend4=${18}
+name_title=${19}
+
+#plot-1D res_1d_xyz_data_paola_sort_X.txt_R1.00_bin1_dx_0.1dy0.1dz0.1_cs.txt Vrot_R.eps '($3):(-$7)' '($3):(-$41)' '($3):(($30-$24)*$3-$50)' 0 18 200 250 R Vrot 2 10 avgVrot Vrot_{mod} Vrot_{OM+dVr/dth} avgTheta150to210degree
+{
+cat <<GnuplotScript
+#cat <<EOF
+
+xmin=${minx}
+xmax=${maxx}
+
+ymin=${miny}
+ymax=${maxy}
+dx=${dx}
+dy=${dy}
+
+set encoding utf8
+set terminal epscairo color size 14,10 enhanced background rgb 'white' font "Symbola,24" solid
+
+set key noautotitle
+set xlabel '${name_x}'
+set ylabel '${name_y}'
+
+
+set output '${PSFILE}'
+set xrange [xmin:xmax]
+set yrange [ymin:ymax]
+set xtics dx
+set ytics dy
+set grid x
+set grid y
+
+set title '${name_title}'
+
+plot '${INPUTFILE}' using   $xy1 pt 7 lc rgb "black" title '$name_legend1',\
+	'${INPUTFILE}' using   $xy2 pt 7 lc rgb "red" title '$name_legend2',\
+	'${INPUTFILE}' using   $xy3 pt 7 lc rgb "blue" title '$name_legend3',\
+	'${INPUTFILE}' using   $xy4 pt 7 lc rgb "green" title '$name_legend4'
+
+GnuplotScript
+} | gnuplot 
+
+convert ${PSFILE} ${PSFILE}.png
+
+#epstopdf  ${PSFILE}  --autorotate=All
+#&& acroread $(basename ${PSFILE} .eps).pdf
+

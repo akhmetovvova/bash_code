@@ -1,0 +1,5 @@
+#!/bin/bash
+ 
+INPUTFILE=$1
+sed 's/,,/,0.0,/g' $INPUTFILE | sed 's/,,/,0.0,/g' |  sed 's/[,*]/\t/g' 
+

@@ -1,0 +1,92 @@
+#!/bin/bash
+
+INPUTFILE=$1
+PSFILE=$2
+
+x0=$3
+y1=$4
+er1=$5
+y2=$6
+er2=$7
+y3=$8
+er3=$9
+minx=${10}
+maxx=${11}
+dx=${12}
+miny=${13}
+maxy=${14}
+dy=${15}
+name=${16}
+
+{
+cat <<GnuplotScript
+#cat <<EOF
+
+x=${x0}
+y1=${y1}
+er1=${er1}
+y2=${y2}
+er2=${er2}
+y3=${y3}
+er3=${er3}
+xmin=${minx}
+xmax=${maxx}
+ymin=${miny}
+ymax=${maxy}
+dx=${dx}
+dy=${dy}
+
+  
+#set terminal postscript enhanced
+set terminal epscairo color size 14,8 enhanced background rgb 'white' font "Symbola,36" solid
+#set size 1.0,0.8
+
+set font 'Times New Roman, 30'
+
+set xlabel ${name_x} offset 2 font 'Times New Roman, 30'
+set ylabel ${name_y} offset 0 font 'Times New Roman, 30'
+
+
+
+
+set output '${PSFILE}'
+
+#set size ratio 0.47
+
+set title "${name}" offset 0 font 'Times New Roman, 22'
+set xlabel "Degree, n" offset 0 font 'Times New Roman, 30'
+set ylabel 'Power of harmonics, mas/yr' offset 0 font 'Times New Roman, 30'
+
+#set label 1 "Gmag" at screen 0.475,0.025
+#set label 2 "mas/yr" at screen 0.025,0.44 rotate by 90
+
+
+set key right top
+
+set xrange [xmin:xmax]
+set yrange [ymin:ymax]
+set ytics font 'Times New Roman, 30'
+set xtics font 'Times New Roman, 30'
+
+set xtics dx
+set ytics dy
+
+set grid
+#f(x)=0
+
+plot	'${INPUTFILE}' using x:y1:er1 w yerrorbars lt 1 lc rgb"blue" notitle,\
+	'${INPUTFILE}' using x:y1 w linespoint lt 1 pt 5 ps 1 lc rgb"blue" title "toroidal" ,\
+	'${INPUTFILE}' using x:y2:er2  w yerrorbars lt 1 lc rgb"green" notitle,\
+	'${INPUTFILE}' using x:y2 w linespoint lt 1 pt 5 ps 1 lc rgb"green" title "spheroidal" ,\
+	'${INPUTFILE}' using x:y3:er3  w yerrorbars lt 1 lc rgb"red" notitle,\
+	'${INPUTFILE}' using x:y3 w linespoint lt 1 pt 5 ps 1 lc rgb"red" title "radial"
+	#f(x) with lines lt 1 lc rgb "black" lw 0.5 notitle 
+	
+GnuplotScript
+} | gnuplot && ps2pdf ${PSFILE}
+
+convert ${PSFILE} ${PSFILE}
+rm ${PSFILE}.pdf
+#epstopdf  ${PSFILE}  --autorotate=All
+#&& acroread $(basename ${PSFILE} .eps).pdf
+

@@ -1,0 +1,101 @@
+#!/bin/bash
+all_data=$1
+outdir=$2
+xmin=$3
+xmax=$4
+ymin=$5
+ymax=$6
+zmin=$7
+zmax=$8
+
+#exsp. create_kinematic_eps_second_error data.txt png -10 10 -10 10 0 10 
+
+infile="temp_data_cut.txt"
+
+if [ -e temp_data_cut.txt ]
+then
+echo "File temp_data_cut.txt is exist!"
+else
+awk '{if($129>500) print $0 }' $all_data > $infile
+echo "Created Sun.dat file done!"
+fi
+
+#1                                                                      10                                                                18    19              21              23
+#i	j	k	R	Theta	X	Y	Z	Vr	Vth	Vx	Vy	Vz	V	var_Vx	var_Vy	var_Vz	var_V	Vx	eVx	Vy	eVy	Vz	eVz
+#25                                             31                               35                                             41
+#w1	ew1	w2	ew2	w3	ew3	M23	eM23	M13	eM13	M12	eM12	M11	eM11	M22	eM22	M33	eM33	OM_count	OM_sig
+
+plot-eps_polar_contor $infile ./$outdir/eVx_om.eps 6 7 20 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eVx_{OM},"km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eVy_om.eps 6 7 22 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eVy_{OM},"km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eVz_om.eps 6 7 24 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eVz_{OM},"km s^{-1}"
+
+plot-eps_polar_contor $infile ./$outdir/ew1.eps 6 7 26 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ew_1,"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/ew2.eps 6 7 28 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ew_2,"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/ew3.eps 6 7 30 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ew_3,"km s^{-1} kpc^{-1}"
+
+plot-eps_polar_contor $infile ./$outdir/eM23.eps 6 7 32 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eM_{23},"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eM13.eps 6 7 34 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eM_{13},"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eM12.eps 6 7 36 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eM_{12},"km s^{-1} kpc^{-1}"
+
+plot-eps_polar_contor $infile ./$outdir/eM11.eps 6 7 38 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eM_{11},"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eM22.eps 6 7 40 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eM_{22},"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eM33.eps 6 7 42 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eM_{33},"km s^{-1} kpc^{-1}"
+
+#45                                                              53                                                              60
+#Vr	Vth	Vz	V	sigVr	sigVth	sigVz	sigV	dVrdr	e_dVrdr	dVrdth	e_dVrdth	dVrdz	e_dVrdz	dVthdr	e_dVthdr	dVthdth	e_dVthdth	dVthdz	e_dVthdz
+#65                                              70                                                      77
+#dVzdr	e_dVzdr	dVzdth	e_dVzdth	dVzdz	e_dVzdz	dVdr	e_dVdr	dVdth	e_dVdth	dVdz	e_dVdz	d2Vrdrdr	e_d2Vrdrdr	d2Vrdrdth	e_d2Vrdrdth
+#81                                                                                                                                  89
+#d2Vrdrdz	e_d2Vrdrdz	d2Vrdthdth	e_d2Vrdthdth	d2Vrdthdz	e_d2Vrdthdz	d2Vrdzdz	e_d2Vrdzdz	d2Vthdrdr	e_d2Vthdrdr
+#91                                                                                                                                99
+#d2Vthdrdth	e_d2Vthdrdth	d2Vthdrdz	e_d2Vthdrdz	d2Vthdthdth	e_d2Vthdthdth	d2Vthdthdz	e_d2Vthdthdz	d2Vthdzdz	e_d2Vthdzdz
+#101                                                                                                                               109
+#d2Vzdrdr	e_d2Vzdrdr	d2Vzdrdth	e_d2Vzdrdth	d2Vzdrdz	e_d2Vzdrdz	d2Vzdthdth	e_d2Vzdthdth	d2Vzdthdz	e_d2Vzdthdz
+#111                                                                                                                               120
+#d2Vzdzdz	e_d2Vzdzdz	d2Vdrdr	e_d2Vdrdr	d2Vdrdth	e_d2Vdrdth	d2Vdrdz	e_d2Vdrdz	d2Vdthdth	e_d2Vdthdth
+#121                                                                                      130
+plot-eps_polar_contor $infile ./$outdir/eVR.eps 6 7 49 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eV_R,"km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eVtheta.eps 6 7 50 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc "eV_{/Symbol q}","km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eVz.eps 6 7 51 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc eV_z,"km s^{-1}"
+#dVR/
+plot-eps_polar_contor $infile ./$outdir/edVR_dR.eps 6 7 54 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc edV_R/dR,"km s^{-1} kpc^{-1}"
+plot-eps_expl_contor $infile ./$outdir/edVR_dtheta.eps '($6):($7):($56/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/RdVR/d"{/Symbol q}","km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/edVR_dz.eps 6 7 58 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc edVR/dz,"km s^{-1} kpc^{-1}"
+#dVth/
+plot-eps_polar_contor $infile ./$outdir/edVtheta_dR.eps 6 7 60 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc edV_"{/Symbol q}"/dR,"km s^{-1} kpc^{-1}"
+plot-eps_expl_contor $infile ./$outdir/edVtheta_dtheta.eps '($6):($7):($62/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/RdV_"{/Symbol q}"/d"{/Symbol q}","km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/edVtheta_dz.eps 6 7 64 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc edV_"{/Symbol q}"/dz,"km s^{-1} kpc^{-1}"
+#dVz/
+plot-eps_polar_contor $infile ./$outdir/edVz_dR.eps 6 7 66 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc edV_z/dR,"km s^{-1} kpc^{-1}"
+plot-eps_expl_contor $infile ./$outdir/edVz_dtheta.eps '($6):($7):($68/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/RdV_z/d"{/Symbol q}","km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/edVz_dz.eps 6 7 70 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc edV_z/dz,"km s^{-1} kpc^{-1}"
+
+# second order
+plot-eps_polar_contor $infile ./$outdir/ed2VR_dRdR.eps 6 7 78 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ed^{2}VR/dR^{2},"km s^{-1} kpc^{-2}"
+plot-eps_expl_contor $infile ./$outdir/ed2VR_dRdtheta.eps '($6):($7):($56/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/Rd^{2}VR/dRd"{/Symbol q}","km s^{-1} kpc^{-2}"
+plot-eps_polar_contor $infile ./$outdir/ed2VR_dRdz.eps 6 7 82 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ed^{2}VR/dRdz,"km s^{-1} kpc^{-2}"
+
+plot-eps_expl_contor $infile ./$outdir/ed2VR_dthetadtheta.eps '($6):($7):($84/$4/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/R^{2}d^{2}VR/d"{/Symbol q}^{2}","km s^{-1} kpc^{-2}"
+plot-eps_expl_contor $infile ./$outdir/ed2VR_dthetadz.eps '($6):($7):($86/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/Rd^{2}VR/d"{/Symbol q}"dz,"km s^{-1} kpc^{-2}"
+plot-eps_polar_contor $infile ./$outdir/ed2VR_dzdz.eps 6 7 88 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ed^{2}VR/dz^{2},"km s^{-1} kpc^{-2}"
+
+#79
+#"d2Vthdrdr\te_d2Vthdrdr\td2Vthdrdth\te_d2Vthdrdth\td2Vthdrdz\te_d2Vthdrdz\td2Vthdthdth\te_d2Vthdthdth\td2Vthdthdz\te_d2Vthdthdz\td2Vthdzdz\te_d2Vthdzdz\t"
+
+plot-eps_polar_contor $infile ./$outdir/ed2Vtheta_dRdR.eps 6 7 90 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ed^{2}V_"{/Symbol q}"/dR^{2},"km s^{-1} kpc^{-2}"
+plot-eps_expl_contor $infile ./$outdir/ed2Vtheta_dRdtheta.eps '($6):($7):($92/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/Rd^{2}V_"{/Symbol q}"/dRd"{/Symbol q}","km s^{-1} kpc^{-2}"
+plot-eps_polar_contor $infile ./$outdir/ed2Vtheta_dRdz.eps 6 7 94 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ed^{2}V_"{/Symbol q}"/dRdz,"km s^{-1} kpc^{-2}"
+
+plot-eps_expl_contor $infile ./$outdir/ed2Vtheta_dthetadtheta.eps '($6):($7):($96/$4/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/R^{2}d^{2}V_"{/Symbol q}"/d"{/Symbol q}^{2}","km s^{-1} kpc^{-2}"
+plot-eps_expl_contor $infile ./$outdir/ed2Vtheta_dthetadz.eps '($6):($7):($98/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/Rd^{2}V_"{/Symbol q}"/d"{/Symbol q}"dz,"km s^{-1} kpc^{-2}"
+plot-eps_polar_contor $infile ./$outdir/ed2Vtheta_dzdz.eps 6 7 100 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ed^{2}V_"{/Symbol q}"/dz^{2},"km s^{-1} kpc^{-2}"
+
+#"d2Vzdrdr\te_d2Vzdrdr\td2Vzdrdth\te_d2Vzdrdth\td2Vzdrdz\te_d2Vzdrdz\td2Vzdthdth\te_d2Vzdthdth\td2Vzdthdz\te_d2Vzdthdz\td2Vzdzdz\te_d2Vzdzdz\t"
+
+plot-eps_polar_contor $infile ./$outdir/ed2Vz_dRdR.eps 6 7 102 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ed^{2}Vz/dR^{2},"km s^{-1} kpc^{-2}"
+plot-eps_expl_contor $infile ./$outdir/ed2Vz_dRdtheta.eps '($6):($7):($104/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/Rd^{2}Vz/dRd"{/Symbol q}","km s^{-1} kpc^{-2}"
+plot-eps_polar_contor $infile ./$outdir/ed2Vz_dRdz.eps 6 7 106 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ed^{2}Vz/dRdz,"km s^{-1} kpc^{-2}"
+
+plot-eps_expl_contor $infile ./$outdir/ed2Vz_dthetadtheta.eps '($6):($7):($108/$4/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/R^{2}d^{2}Vz/d"{/Symbol q}^{2}","km s^{-1} kpc^{-2}"
+plot-eps_expl_contor $infile ./$outdir/ed2Vz_dthetadz.eps '($6):($7):($110/$4)' $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc e1/Rd^{2}Vz/d"{/Symbol q}"dz,"km s^{-1} kpc^{-2}"
+plot-eps_polar_contor $infile ./$outdir/ed2Vz_dzdz.eps 6 7 112 $xmin $xmax $ymin $ymax $zmin $zmax X,kpc Y,kpc ed^{2}Vz/dz^{2},"km s^{-1} kpc^{-2}"

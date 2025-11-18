@@ -1,0 +1,71 @@
+#!/bin/bash
+infile=$1
+binfile=$2
+outdir=$3
+
+xmin=$4
+xmax=$5
+ymin=$6
+ymax=$7
+
+#1
+#i	j	k	R	Theta	X	Y	Z	Vr	Vth	Vx	Vy	Vz	var_Vx	var_Vy	var_Vz	Vx	eVx	Vy	eVy	Vz	eVz
+#23
+#w1	ew1	w2	ew2	w3	ew3	M23	eM23	M13	eM13	M12	eM12	M11	eM11	M22	eM22	M33	eM33	OM_count	OM_sig
+#43
+#Vr	Vth	Vz	sigVr	sigVth	sigVz	dVrdr	e_dVrdr	dVrdth	e_dVrdth	dVrdz	e_dVrdz	dVthdr	e_dVthdr	dVthdth	e_dVthdth	dVthdz	e_dVthdz
+#61
+#dVzdr	e_dVzdr	dVzdth	e_dVzdth	dVzdz	e_dVzdz	Count 
+plot-eps $infile ./$outdir/Vx_om.eps 6 7 17 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc Vx_{OM},"km s^{-1}"
+plot-eps $infile ./$outdir/Vy_om.eps 6 7 19 $xmin $xmax $ymin $ymax -250 -180 X,kpc Y,kpc Vy_{OM},"km s^{-1}"
+plot-eps_expl $infile ./$outdir/Vz_om.eps '($6):($7):(-($21))' $xmin $xmax $ymin $ymax -8 8 X,kpc Y,kpc Vz_{OM},"km s^{-1}"
+
+plot-eps $infile ./$outdir/w1.eps 6 7 23 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc w1,"km s^{-1}"
+plot-eps $infile ./$outdir/w2.eps 6 7 25 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc w2,"km s^{-1}"
+plot-eps $infile ./$outdir/w3.eps 6 7 27 $xmin $xmax $ymin $ymax -60 10 X,kpc Y,kpc w3,"km s^{-1}"
+
+plot-eps $infile ./$outdir/M23.eps 6 7 29 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc M_{23},"km s^{-1}"
+plot-eps $infile ./$outdir/M13.eps 6 7 31 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc M_{13},"km s^{-1}"
+plot-eps $infile ./$outdir/M12.eps 6 7 33 $xmin $xmax $ymin $ymax 0 20 X,kpc Y,kpc M_{12},"km s^{-1}"
+
+plot-eps $infile ./$outdir/M11.eps 6 7 35 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc M_{11},"km s^{-1}"
+plot-eps $infile ./$outdir/M22.eps 6 7 37 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc M_{22},"km s^{-1}"
+plot-eps $infile ./$outdir/M33.eps 6 7 39 $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc M_{33},"km s^{-1}"
+
+
+plot-eps $infile ./$outdir/VR.eps 6 7 43 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc VR,"km s^{-1}"
+plot-eps $infile ./$outdir/Vtheta.eps 6 7 44 $xmin $xmax $ymin $ymax -250 -180 X,kpc Y,kpc "V_{/Symbol q}","km s^{-1}"
+plot-eps $infile ./$outdir/Vz.eps 6 7 45 $xmin $xmax $ymin $ymax -8 8 X,kpc Y,kpc Vz,"km s^{-1}"
+
+plot-eps $infile ./$outdir/dVR_dR.eps 6 7 49 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dVR/dR,"km s^{-1}"
+plot-eps $infile ./$outdir/dVR_dtheta.eps 6 7 51 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc dVR/d"{/Symbol q}","km s^{-1}"
+plot-eps $infile ./$outdir/dVR_dz.eps 6 7 53 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dVR/dz,"km s^{-1}"
+
+plot-eps $infile ./$outdir/dVtheta_dR.eps 6 7 55 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc dV_"{/Symbol q}"/dR,"km s^{-1}"
+plot-eps $infile ./$outdir/dVtheta_dtheta.eps 6 7 57 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc dV_"{/Symbol q}"/d"{/Symbol q}","km s^{-1}"
+plot-eps $infile ./$outdir/dVtheta_dz.eps 6 7 59 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dV_"{/Symbol q}"/dz,"km s^{-1}"
+
+plot-eps $infile ./$outdir/dVz_dR.eps 6 7 61 $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc dVz/dR,"km s^{-1}"
+plot-eps $infile ./$outdir/dVz_dtheta.eps 6 7 63 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc dVz/d"{/Symbol q}","km s^{-1}"
+plot-eps $infile ./$outdir/dVz_dz.eps 6 7 65 $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc dVz/dz,"km s^{-1}"
+
+#combination
+#𝑉rot = −𝑉𝜃 = (𝑀+12 − 𝜔3)𝑅 − 𝜕𝑉𝑅/𝜕𝜃 
+plot-eps_expl $infile ./$outdir/Vrot_com.eps '($6):($7):(-(($33-$27)*$4-$51))' $xmin $xmax $ymin $ymax -250 -180 X,kpc Y,kpc -Vrot_{oort+dvr/d_"{/Symbol q}"},"km s^{-1}"
+#𝑉rot = −𝑉𝜃 = (𝑀+12 − 𝜔3)𝑅
+plot-eps_expl $infile ./$outdir/Vrot_oort.eps '($6):($7):(-(($33-$27)*$4))' $xmin $xmax $ymin $ymax -250 -180 X,kpc Y,kpc -Vrot_{oort},"km s^{-1}"
+#dVtheta_dr => w3+M12
+plot-eps_expl $infile ./$outdir/dVtheta_dR_om.eps '($6):($7):($27+$33)' $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc dVtheta/dR_{OM},"km s^{-1}"
+#dVz_dr => w2-M13
+plot-eps_expl $infile ./$outdir/dVz_dR_om.eps '($6):($7):($25-$31)' $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc dVz/dR_{OM},"km s^{-1}"
+#-(𝜔1 + 𝑀+23)*R = 𝜕𝑉𝑧 /𝜕𝜃   
+plot-eps_expl $infile ./$outdir/dVz_dtheta_om.eps '($6):($7):(-(($23+$29)*$4))' $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc dVz/d"{/Symbol q}"_{OM},"km s^{-1}"
+#-(𝜔2 + 𝑀+13) = 𝜕𝑉𝑅/𝜕𝑧
+plot-eps_expl $infile ./$outdir/dVR_dz_om.eps '($6):($7):(-($25+$31))' $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dVr/dz_{OM},"km s^{-1}"
+#(𝜔1 − 𝑀+23) = 𝜕𝑉𝜃 /𝜕𝑧
+plot-eps_expl $infile ./$outdir/dVtheta_dz_om.eps '($6):($7):($23-$29)' $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dV_"{/Symbol q}"/dz_{OM},"km s^{-1}"
+
+#i	j	k	X	Y	Z	R	Theta	Vx	Vy	Vz	VR	Vtheta	sig_Vx	sig_Vy	sig_Vz	sig_VR	sig_Vtheta	N
+plot-eps_vector_expl $binfile ./$outdir/Vxy.eps '4:5:(($9)/300):(($10)/300):(sqrt(($9)**2+$10**2))' $xmin $xmax $ymin $ymax 180 250 X,kpc Y,kpc Vxy,"km s^{-1}"
+
+plot-eps_vector_expl $binfile ./$outdir/Vxy_s.eps '4:5:(($9+9.5)/300):(($10-250.7)/300):(sqrt(($9+9.5)**2+($10-250.7)**2))' $xmin $xmax $ymin $ymax 180 250 X,kpc Y,kpc Vxy_{SUN},"km s^{-1}"

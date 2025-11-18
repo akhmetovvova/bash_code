@@ -1,0 +1,9 @@
+#!/bin/bash
+ 
+INPUTFILE=$1
+NC=$2
+r=$3
+
+fc=$[$NC-1]
+export LC_ALL=C
+sort --field-separator=',' +$fc -$NC -g $r $INPUTFILE

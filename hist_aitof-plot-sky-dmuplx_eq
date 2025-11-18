@@ -1,0 +1,28 @@
+#!/bin/bash
+
+INPUTFILE=$1
+
+
+#pixel
+#0.799665	1.488016	1.000000	0.009925	0.044252	-0.008596	0.758150	0.924914	0.815727	2501
+plot_aitof_map pixel_$INPUTFILE eq_mura_$INPUTFILE.png 1 2 6 0.5 1 mura,mas/yr
+plot_aitof_map pixel_$INPUTFILE eq_mude_$INPUTFILE.png 1 2 7 0.5 1 mudec,mas/yr
+plot_aitof_map pixel_$INPUTFILE eq_plx_$INPUTFILE.png 1 2 8 0.5 1 plx,mas/yr
+plot_aitof_map pixel_$INPUTFILE eq_sigmura_$INPUTFILE.png 1 2 9 1.5 1 sigmura,mas/yr
+plot_aitof_map pixel_$INPUTFILE eq_sigmude_$INPUTFILE.png 1 2 11 1.5 1 sigmudec,mas/yr
+plot_aitof_map pixel_$INPUTFILE eq_sigplx_$INPUTFILE.png 1 2 11 1.5 1 sigplx,mas/yr
+plot_aitof_map pixel_$INPUTFILE eq_density_$INPUTFILE.png 1 2 12 5000 1 Density
+
+#*ZVSH.txt
+#1.0	0.786715	0.002658	3.0870396261	-0.8507183530	1.55114	-2.98772	0.366321	0.901633	-1.07237	-3.19101	1.55251	1.22626	0.889714	20.5711	20.9054	20.0585
+plot_histogram $INPUTFILE eq_plx_eplx_$INPUTFILE.png '$8/$9' -5 5 1 100000 200.0 5 plx/eplx N,count
+plot_histogram $INPUTFILE eq_mura_emura_$INPUTFILE.png '$10/$12' -5 5 1 100000 200.0 5 mura/emura N,count
+plot_histogram $INPUTFILE eq_mude_emude_$INPUTFILE.png '$11/$13' -5 5 1 100000 200.0 5 mudec/emudec N,count
+plot_histogram $INPUTFILE eq_ruwe_$INPUTFILE.png '$14' 0 5 1 150000 200.0 5 RUWE N,count
+plot_histogram $INPUTFILE eq_gmag_$INPUTFILE.png '$15' 13 22 1 150000 180.0 5 Gmag N,count
+plot_histogram $INPUTFILE eq_bp_rp_$INPUTFILE.png '$16-$17' -1 4 1 100000 200.0 5 G_{BP}-G_{RP} N,count
+
+#power
+#n	T	ET	S	ES	V	EV
+#0	0.000000	0.000000	0.000000	0.000000	0.064658	0.008127
+plot-png-vsh power_harmonics_s5.0_r0.1_$INPUTFILE EQ_power_$INPUTFILE.png 1 2 3 4 5 6 7 -0.2 20.2 1 0 0.1 0.01

@@ -1,0 +1,92 @@
+#!/bin/bash
+
+INPUTFILE=$1
+PSFILE=$2
+x=$3
+dx=$4
+name_x=$5
+y=$6
+dy=$7
+name_y=$8
+vx=$9
+vy=${10}
+z=${11}
+minz=${12}
+maxz=${13}
+name_z=${14}
+name=${15}
+
+
+#Phi_healpix	Theta_healpix	Phi	Theta	R	Vphi	Vtheta	Vr	sig_Vphi	sig_Vtheta	sig_Vr	Nobjects
+#0.785398	1.489124	0.785398	1.478372	1.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	16
+#./plot-png_aitof_color_vector pixel_model_tv_10_10_0.txt model_tv_10_10_0.png 1 0.3 "l,degree" 2 0.2 "b,degree" '($6*0.05)' '($7*0.05)' 8 -5 5 "plx, max" "tv_{10,10,0}"
+
+{
+cat <<GnuplotScript
+#cat <<EOF
+
+dx=${dx}
+xname=${name_x}
+
+dy=${dy}
+yname=${name_y}
+
+zmin=${minz}
+zmax=${maxz}
+zname=${name_z}
+
+name=${name}
+
+set encoding utf8
+#set terminal gif animate delay time loop 0 optimize size 800,600
+#set terminal gif animate delay 5 loop 0 optimize size 800,600
+set terminal pngcairo size 1100,900 enhanced font "Symbola,16.0"
+#set terminal epscairo color size 14,11.5 enhanced font "Symbola,36" solid
+#set terminal epslatex standalone
+#set terminal postscript enhanced
+#set size 10.0,8
+
+set view map
+set palette rgbformulae 33,13,10 #30,31,32 #33,13,10
+
+wrap(l)  = l < pi ? l : l - 2 * pi
+hax(l,b) = cos(b) * sin(wrap(l) / 2) / sqrt(1 + cos(b) * cos(wrap(l) / 2))
+hay(l,b) = sin(b)/sqrt(1+cos(b)*cos(wrap(l)/2))
+max(x,y) = x>y?x:y
+min(x,y) = x<y?x:y
+sat(x,xmax) = x<-xmax? -xmax : x > xmax ? xmax : x;
+
+set key noautotitle
+
+set xrange [-2:2]
+set yrange [-1:1]
+set xlabel '${name_x}'
+set ylabel '${name_y}'
+set xtics dx
+set ytics dy
+
+set cbrange [zmin:zmax]
+set cblabel '${name_z}'
+
+set grid x
+set grid y
+
+set output '${PSFILE}'
+set title '${name}'
+
+#  set lmargin at screen 0
+#  set rmargin at screen 0.85
+#  set tmargin at screen 0.9
+#  set bmargin at screen 0.1
+#  set border 0
+
+
+plot '${INPUTFILE}' using (2*hax(\$$x,\$$y)):(hay(\$$x,\$$y)):$vx:$vy:$z with vectors linecolor palette z lw 1,\
+'< aitof-grid --xgrid=15deg --ygrid=15deg' using (2*\$1):2 with lines lt 1 lc rgb 'black' lw 0.2 notitle
+
+
+GnuplotScript
+} | gnuplot 
+
+#lc rgb 'black' , lc rgb 'red'
+

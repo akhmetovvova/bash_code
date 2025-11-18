@@ -1,0 +1,109 @@
+#!/bin/bash
+
+INPUTFILE=$1
+PSFILE=$2
+
+xyz=$3
+minx=$4
+maxx=$5
+miny=$6
+maxy=$7
+minz=$8
+maxz=$9
+name_x=${10}
+name_y=${11}
+name_z=${12}
+
+
+{
+cat <<GnuplotScript
+#cat <<EOF
+
+expression = "${xyz}"
+
+xmin=${minx}
+xmax=${maxx}
+
+ymin=${miny}
+ymax=${maxy}
+
+zmin=${minz}
+zmax=${maxz}
+
+xname=${name_x}
+yname=${name_y}
+zname=${name_z}
+
+ondir = '${PSFILE}'
+indata = '${INPUTFILE}'
+indata_Sun = "Sun.dat"
+
+set encoding utf8
+#set terminal gif animate delay 5 loop 0 optimize size 800,600
+#set terminal pngcairo enhanced font "Symbola,16.0" size 540,420
+#set terminal epscairo color size 14,11.5 enhanced background rgb 'white' font "Symbola,36" solid
+set terminal epscairo color size 10,8.8 enhanced background rgb 'white' font "Times,36" solid
+
+#set terminal epslatex standalone
+
+#set terminal postscript enhanced
+#set size 10.0,8
+
+set key noautotitle
+set angles degrees
+set pm3d
+set palette rgbformulae 33,13,10 #30,31,32 #33,13,10
+set xtics 2
+set ytics 2
+set xrange [xmin:xmax]
+set yrange [ymin:ymax]
+set xlabel '${name_x}'
+set ylabel '${name_y}'
+
+
+π = 3.1415926535
+R0 = 8.249
+
+r_max = xmax-xmin+2
+r_step = 2
+θ_max = 360
+θ_step = 5
+boxsize = 1
+sunsize = 2
+cylcolor = "gray50"
+rcolor = "black"
+
+f_r2d(θ) = θ*180/π
+f_polar_x(r,θ) = r*cos(θ)
+f_polar_y(r,θ) = r*sin(θ)
+
+set title '${name_z}'
+set cbrange [zmin:zmax]
+set cblabel '${name_z}'
+
+set output '${PSFILE}'
+
+set multiplot
+
+	plot indata u $xyz palette pt 5 ps boxsize, \
+		indata_Sun u 1:2 ps sunsize pt 81 lc rgb "black"
+
+                set for [r=0:r_max-2*r_step:r_step] label at first (-r+R0-0.4), first (0+0.2) sprintf("%d", r) tc rgb rcolor
+                set for [θ=90:150:30] label at first (R0+R0*tan(360-90-θ)-0.9), first (R0-0.25) sprintf("%d°", θ) tc rgb rcolor
+                set for [θ=180:270:30] label at first (R0-R0*tan(360-90-θ)-0.9), first (-R0+0.25) sprintf("%d°", θ) tc rgb rcolor
+                set label at first (-R0), first (0+0.25) sprintf("%d°", 180) tc rgb rcolor
+		plot for [r=0:r_max:r_step] [θ=0:θ_max:θ_step] '+' using (f_polar_x(r,θ)+R0):(f_polar_y(r,θ)) with lines lc rgb cylcolor lw .2, \
+		for [θ=0:θ_max:θ_step] [r=0:r_max:r_step] '+' using (f_polar_x(r,θ)+R0):(f_polar_y(r,θ)) with lines lc rgb cylcolor lw .2, \
+                for [θ=0:360:30] [r=0:r_max:r_step] '+' using (f_polar_x(r,θ)+R0):(f_polar_y(r,θ)) with lines lc rgb rcolor lw 0.2
+
+unset multiplot
+GnuplotScript
+} | gnuplot #&& ps2pdf Vrot.eps
+
+convert ${PSFILE} ${PSFILE}.png
+#convert ${PSFILE} -resize 1024x854 ${PSFILE}.png
+#convert ${PSFILE} -rotate 90 ${PSFILE}.png
+
+#epstopdf  ${PSFILE}  --autorotate=All
+#&& acroread $(basename ${PSFILE} .eps).pdf
+

@@ -1,0 +1,54 @@
+#!/bin/bash
+
+#./plot_histogram test.dat histogran.png '$11' 13 22 1 100000 100.0 5 Gmag N,count
+#plot_histogram gaiadr3_crf_ZVSH.txt color.png '$12-$13' -1 6 1 100000 100.0 5 Gmag N,count
+
+INPUTFILE=$1
+PSFILE=$2
+mag=$3
+xmin=$4
+xmax=$5
+ymin=$6
+ymax=$7
+n=$8
+baselogscale=$9
+name_x=${10}
+name_y=${11}
+dx=${12}
+dy=${13}
+
+{
+cat <<GnuplotScript
+
+#set encoding utf8
+set terminal pngcairo size 800,600 enhanced background rgb 'white' font "Symbola,15" solid
+#set term pngcairo size 800,600
+set output '${PSFILE}'
+
+  set key off
+
+  set style data histograms
+  set style fill solid
+
+  width = ($xmax-$xmin)/$n # binwidth; evaluates to 1.0
+  hist(x,width)=width*floor(x/width)+width/2.0
+
+  set xtics $dx
+  set ytics $dy
+  set xrange [$xmin:$xmax]
+  set yrange [$ymin:$ymax]
+  set xlabel '${name_x}'
+  set ylabel '${name_y}'
+
+  set logscale y $baselogscale
+
+  set boxwidth width*0.9
+  set style fill solid 0.5 # fill style
+
+  #set title  "Histogram ${name_x}/ ${INPUTFILE}"
+  plot '${INPUTFILE}' using (hist($mag,width)+width/2):(1.0) smooth freq w boxes lc rgb"blue" notitle
+
+GnuplotScript
+} | gnuplot #&& ps2pdf ${PSFILE}
+
+#$convert ${PSFILE} ${PSFILE}.png

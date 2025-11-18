@@ -1,0 +1,29 @@
+#!/bin/bash
+
+INPUTFILE=$1
+
+ps=0.6
+
+#pixel
+#Phi_healpix	Theta_healpix	Phi	Theta	R	Vphi	Vtheta	Vr	sig_Vphi	sig_Vtheta	sig_Vr	eVphi	eVtheta	eVr	sig_eVphi	sig_eVtheta	sig_eVr	Corr	sig_corr	Nobjects
+
+plot_aitof_map $INPUTFILE eq_mura_$INPUTFILE.png 1 2 6 0.2 $ps "{/Symbol m_a}, mas/yr"
+plot_aitof_map $INPUTFILE eq_mude_$INPUTFILE.png 1 2 7 0.2 $ps "{/Symbol m_d}, mas/yr"
+plot_aitof_map $INPUTFILE eq_plx_$INPUTFILE.png 1 2 8 0.8 $ps plx,mas
+
+plot_aitof_map $INPUTFILE eq_sigmura_$INPUTFILE.png 1 2 9 0.5 $ps "{/Symbol s_{ma}}, mas/yr"
+plot_aitof_map $INPUTFILE eq_sigmude_$INPUTFILE.png 1 2 10 0.5 $ps "{/Symbol s_{md}}, mas/yr"
+plot_aitof_map $INPUTFILE eq_sigplx_$INPUTFILE.png 1 2 11 0.8 $ps "{/Symbol s}_{plx}, mas"
+
+plot_aitof_map $INPUTFILE eq_er_mura_$INPUTFILE.png 1 2 12 0.5 $ps "{/Symbol m_a}Error, mas/yr"
+plot_aitof_map $INPUTFILE eq_er_mude_$INPUTFILE.png 1 2 13 0.5 $ps "{/Symbol m_d}Error, mas/yr"
+plot_aitof_map $INPUTFILE eq_er_plx_$INPUTFILE.png 1 2 14 0.8 $ps plxError,mas
+
+plot_aitof_map $INPUTFILE eq_sig_er_mura_$INPUTFILE.png 1 2 15 0.5 $ps "{/Symbol s_{ma}}Error, mas/yr"
+plot_aitof_map $INPUTFILE eq_sig_er_mude_$INPUTFILE.png 1 2 16 0.5 $ps "{/Symbol s_{md}}Error, mas/yr"
+plot_aitof_map $INPUTFILE eq_sig_er_plx_$INPUTFILE.png 1 2 17 0.5 $ps "{/Symbol s}_{plx}Error, mas"
+
+plot_aitof_map $INPUTFILE eq_pm_$INPUTFILE.png 1 2 21 0.3 $ps "{/Symbol m}, mas/yr"
+
+plot_aitof_map $INPUTFILE eq_density_$INPUTFILE.png 1 2 20 5000 $ps Density
+

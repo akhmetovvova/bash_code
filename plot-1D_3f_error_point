@@ -1,0 +1,80 @@
+#!/bin/bash
+
+
+PSFILE=$1
+
+file=$2
+xy=$3
+file1=$4
+xy1=$5
+exy1=$6
+file2=$7
+xy2=$8
+exy2=$9
+file3=${10}
+xy3=${11}
+exy3=${12}
+minx=${13}
+maxx=${14}
+miny=${15}
+maxy=${16}
+name_x=${17}
+name_y=${18}
+dx=${19}
+dy=${20}
+name_legend1=${21}
+name_legend2=${22}
+name_legend3=${23}
+name_title=${24}
+
+
+#plot-1D_3f_error_point res_1d_xyz_data_paola_sort_X.txt_R1.00_bin1_dx_0.1dy0.1dz0.1_cs.txt Vrot_R_err.eps '($3):(-$7)' '($3):(-$7):($11)' '($3):(-$41)' '($3):(-$41):($45)' '($3):(($30-$24)*$3)' '($3):(($30-$24)*$3):(sqrt($31*$31+$25*$25)*$3)' 0 18 200 250 R Vrot 2 10 avgVrot Vrot_{mod} Vrot_{OM} avgTheta150to210degre
+
+{
+cat <<GnuplotScript
+#cat <<EOF
+
+xmin=${minx}
+xmax=${maxx}
+
+ymin=${miny}
+ymax=${maxy}
+dx=${dx}
+dy=${dy}
+
+set encoding utf8
+set terminal epscairo color size 14,10 enhanced background rgb 'white' font "Symbola,24" solid
+
+set key left top
+set xlabel '${name_x}'
+set ylabel '${name_y}'
+
+
+set output '${PSFILE}'
+set xrange [xmin:xmax]
+set yrange [ymin:ymax]
+set xtics dx
+set ytics dy
+set grid x
+set grid y
+f(x)=0
+set title '${name_title}'
+
+plot   '${file}' using   $xy pt 7 ps 0.1 lc rgb "black", f(x),\
+       '${file1}' using   $exy1 w yerrorbars lt 1 lc rgb "green" notitle,\
+       '${file1}' using   $xy1  pt 7 lc rgb "green" title '$name_legend1',\
+       '${file2}' using   $exy2 w yerrorbars lt 1 lc rgb "red" notitle,\
+       '${file2}' using   $xy2 pt 7 lc rgb "red" title '$name_legend2',\
+       '${file3}' using   $exy3 w yerrorbars lt 1 lc rgb "blue" notitle,\
+       '${file3}' using   $xy3 pt 7 lc rgb "blue" title '$name_legend3'
+
+
+	
+GnuplotScript
+} | gnuplot 
+
+convert ${PSFILE} ${PSFILE}.png
+
+#epstopdf  ${PSFILE}  --autorotate=All
+#&& acroread $(basename ${PSFILE} .eps).pdf
+

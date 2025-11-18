@@ -1,0 +1,101 @@
+#!/bin/bash
+
+INPUTFILE=$1
+PSFILE=$2
+
+xy=$3
+minx=$4
+maxx=$5
+miny=$6
+maxy=$7
+name_x=$8
+name_y=$9
+t=${10}
+tmin=${11}
+tmax=${12}
+tname=${13}
+tmindata=${14}
+dt=${15}
+dx=${16}
+dy=${17}
+time=${18}
+
+
+
+#i	j	k	R	Theta	X	Y	Z	Vr	Vth	Vx	Vy	Vz
+#./plot-gifs_index_symetric_file res_age_less_1mln_cyl_cs.txt Vtheta_R_OM_sym_theta.gif '($4):((($33-$27)*$4-$51))' 0 20 0 250 R Vrot 2 90 150 theta 90 1 1 10 100  
+
+
+{
+cat <<GnuplotScript
+#cat <<EOF
+
+
+xmin=${minx}
+xmax=${maxx}
+
+ymin=${miny}
+ymax=${maxy}
+
+xname=${name_x}
+yname=${name_y}
+
+t=${t}
+tmin=${tmin}
+tmax=${tmax}
+tname=${tname}
+tmindata=${tmindata}
+dt=${dt}
+
+dx=${dx}
+dy=${dy}
+
+time=${time}
+name_leg='${name_leg}'
+
+indata = '${INPUTFILE}'
+
+indata_Sun = "Sun.dat"
+
+set encoding utf8
+set terminal gif animate delay time loop 0 optimize size 800,600
+#set terminal gif animate delay 5 loop 0 optimize size 800,600
+#set terminal pngcairo enhanced font "Symbola,16.0" size 540,420
+#set terminal epscairo color size 14,11.5 enhanced font "Symbola,36" solid
+#set terminal epslatex standalone
+#set terminal postscript enhanced
+#set size 10.0,8
+
+filetype = ".gif"
+
+set key noautotitle
+set xrange [xmin:xmax]
+set yrange [ymin:ymax]
+set xlabel '${name_x}'
+set ylabel '${name_y}'
+
+boxsize = 1
+
+set xtics dx
+set ytics dy
+set grid x
+set grid y
+
+
+set output '${PSFILE}'
+j=0;
+
+do for [i=tmin:tmax]{
+
+
+	set title sprintf("$tname 1= %f  $tname 2=%f",tmindata+i*dt,(tmindata-i*dt+180.0))
+		
+	plot sprintf("< awk '{if($%d==%d) print $'0'}' %s", t,i,indata) u $xy pt 7 lc rgb 'black' title "$tname 1",\
+		sprintf("< awk '{if($%d==%d) print $'0'}' %s", t,i-j,indata) u $xy pt 7 lc rgb 'red' title "$tname 2"				
+j=j+2;
+}
+GnuplotScript
+} | gnuplot 
+
+#lc rgb 'black' , lc rgb 'red'
+

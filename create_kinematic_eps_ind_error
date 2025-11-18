@@ -1,0 +1,42 @@
+#!/bin/bash
+infile=$1
+outdir=$2
+
+#1
+#x y i j k R Theta X Y Z Vr Vth Vx Vy Vz Mag Colour var_Vx var_Vy var_Vz var_Mag var_Colour Count dVxdx dVxdy dVxdz dVydx dVydy dVydz dVzdx dVzdy dVzdz dVrdr dVrdth dVrdz dVthdr dVthdth dVthdz dVzdr dVzdth dVzdz 
+#42
+#Vx Vy Vz w1 w2 w3 M23 M13 M12 M11 M22 M33 eVx eVy eVz ew1 ew2 ew3 eM23 eM13 eM12 eM11 eM22 eM33 sigma OM_count OM_count_exclude Vx Vy Vz dVxdx dVxdy dVxdz dVydx dVydy dVydz dVzdx dVzdy dVzdz
+plot-eps_polar_contor $infile ./$outdir/eVx_om.eps 6 7 20 -8 8 -10 10 0 5 X,kpc Y,kpc eVx_{OM},"km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eVy_om.eps 6 7 22 -8 8 -10 10 0 5 X,kpc Y,kpc eVy_{OM},"km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eVz_om.eps 6 7 24 -8 8 -10 10 0 5 X,kpc Y,kpc eVz_{OM},"km s^{-1}"
+
+plot-eps_polar_contor $infile ./$outdir/ew1.eps 6 7 26 -8 8 -10 10 0 5 X,kpc Y,kpc ew_1,"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/ew2.eps 6 7 28 -8 8 -10 10 0 5 X,kpc Y,kpc ew_2,"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/ew3.eps 6 7 30 -8 8 -10 10 0 5 X,kpc Y,kpc ew_3,"km s^{-1} kpc^{-1}"
+
+plot-eps_polar_contor $infile ./$outdir/eM23.eps 6 7 32 -8 8 -10 10 0 5 X,kpc Y,kpc eM_{23},"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eM13.eps 6 7 34 -8 8 -10 10 0 5 X,kpc Y,kpc eM_{13},"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eM12.eps 6 7 36 -8 8 -10 10 0 5 X,kpc Y,kpc eM_{12},"km s^{-1} kpc^{-1}"
+
+plot-eps_polar_contor $infile ./$outdir/eM11.eps 6 7 38 -8 8 -10 10 0 5 X,kpc Y,kpc eM_{11},"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eM22.eps 6 7 40 -8 8 -10 10 0 5 X,kpc Y,kpc eM_{22},"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eM33.eps 6 7 42 -8 8 -10 10 0 5 X,kpc Y,kpc eM_{33},"km s^{-1} kpc^{-1}"
+
+
+# 81 
+# Vr Vth Vz dVrdr dVrdth dVrdz dVthdr dVthdth dVthdz dVzdr dVzdth dVzdz e_Vx e_Vy e_Vz e_dVxdx e_dVxdy e_dVxdz e_dVydx e_dVydy e_dVydz e_dVzdx e_dVzdy e_dVzdz e_Vr e_Vth e_Vz e_dVrdr e_dVrdth de_Vrdz e_dVthdr e_dVthdth e_dVthdz e_dVzdr e_dVzdth e_dVzdz
+plot-eps_polar_contor $infile ./$outdir/eVR.eps 6 7 49 -8 8 -10 10 0 5 X,kpc Y,kpc eV_R,"km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eVtheta.eps 6 7 50 -8 8 -10 10 0 5 X,kpc Y,kpc "eV_{/Symbol q}","km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/eVz.eps 6 7 51 -8 8 -10 10 0 5 X,kpc Y,kpc eV_z,"km s^{-1}"
+
+plot-eps_polar_contor $infile ./$outdir/edVR_dR.eps 6 7 54 -8 8 -10 10 0 5 X,kpc Y,kpc edV_R/dR,"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/edVR_dtheta.eps 6 7 56 -8 8 -10 10 0 5 X,kpc Y,kpc edVR/d"{/Symbol q}","km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/edVR_dz.eps 6 7 58 -8 8 -10 10 0 5 X,kpc Y,kpc edVR/dz,"km s^{-1} kpc^{-1}"
+
+plot-eps_polar_contor $infile ./$outdir/edVtheta_dR.eps 6 7 99 -8 8 -10 10 0 5 X,kpc Y,kpc edV_"{/Symbol q}"/dR,"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/edVtheta_dtheta.eps 6 7 100 -8 8 -10 10 0 5 X,kpc Y,kpc edV_"{/Symbol q}"/d"{/Symbol q}","km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/edVtheta_dz.eps 6 7 101 -8 8 -10 10 0 5 X,kpc Y,kpc edV_"{/Symbol q}"/dz,"km s^{-1} kpc^{-1}"
+
+plot-eps_polar_contor $infile ./$outdir/edVz_dR.eps 6 7 102 -8 8 -10 10 0 5 X,kpc Y,kpc edV_z/dR,"km s^{-1} kpc^{-1}"
+plot-eps_polar_contor $infile ./$outdir/edVz_dtheta.eps 6 7 103 -8 8 -10 10 0 5 X,kpc Y,kpc edV_z/d"{/Symbol q}","km s^{-1}"
+plot-eps_polar_contor $infile ./$outdir/edVz_dz.eps 6 7 104 -8 8 -10 10 0 5 X,kpc Y,kpc edV_z/dz,"km s^{-1} kpc^{-1}"

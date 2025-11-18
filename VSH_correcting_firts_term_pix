@@ -1,0 +1,32 @@
+#!/bin/bash
+
+#VSH_correcting_firts_term QSOsRun168_cut_mu_er3.tsv ZVSHin_QSOsRun168_cut_mu_er3.res 3 4 5 6 7 8 9 10 1000000 0 2
+
+name_file=$1
+name_param=$2
+cra=$3
+cdec=$4
+cplx=$5
+ceplx=$6
+cpmra=$7
+cepmra=$8
+cpmde=$9
+cepmde=${10}
+Nobj=${11}
+rad=${12}
+Nmax=${13}
+
+#ZVSH_ind $name_file col_l=$cra col_b=$cdec col_r=1 col_mul=$cpmra col_mub=$cpmde col_vr=$cplx col_emul=$cepmra col_emub=$cepmde col_evr=$ceplx col_cor=2 rad=$rad Nobj=$Nobj weight=1 nsigLSM=3.0 kLSM=3.0 Nmax=$Nmax bmin=-90 bmax=90 > $name_param 2>$name_param.log
+#awk '{if(FNR==1 || $1=="t_1_0_1" || $1=="t_1_1_0" || $1=="t_1_1_1" || $1=="s_1_0_1" || $1=="s_1_1_0" || $1=="s_1_1_1" || $1=="v_0_0_1" || $1=="v_1_0_1" || $1=="v_1_1_0" || $1=="v_1_1_1") print $0 }'  $name_param > first_order_$name_param
+#plot-png-vsh_tan  power_harmonics_s3.0_r3.0_w1_$name_file power_harmonics_s3.0_r3.0_w1_$name_file.png 1 2 3 4 5 -0.2 11 1 0 0.025 0.005 $name_file
+#nparam=$(wc -l first_order_$name_param | awk ' {print $1-1}')
+#echo $nparam
+#VSH_modeling_for_stars first_order_$name_param $nparam $Nobj $cra $cdec $cpmra $cpmde $cplx $rad $name_file > cor_$name_file
+
+ZVSH $name_file col_l=$cra col_b=$cdec col_r=1 col_mul=$cpmra col_mub=$cpmde col_vr=$cplx col_er_mul=$cepmra col_er_mub=$cepmde col_er_vr=$ceplx col_cor=2 rad=$rad side=30 nsig=3.0 nsigLSM=3.0 kLSM=0.1 Nmax=10 Chi=6.7 bmin=-90 bmax=90 manual=2 weight=1 sep=0 > pix_$name_param 2>pix_$name_param.log
+awk '{if(FNR==1 || $1=="t_1_0_1" || $1=="t_1_1_0" || $1=="t_1_1_1" || $1=="s_1_0_1" || $1=="s_1_1_0" || $1=="s_1_1_1" || $1=="v_0_0_1" || $1=="v_1_0_1" || $1=="v_1_1_0" || $1=="v_1_1_1") print $0 }'  pix_$name_param > first_order_pix_$name_param
+plot-png-vsh_tan  power_harmonics_s3.0_r0.1_w1_$name_file power_harmonics_s3.0_r0.1_w1_$name_file.png 1 2 3 4 5 -0.2 11 1 0 0.025 0.005 $name_file
+
+nparam=$(wc -l first_order_pix_$name_param | awk ' {print $1-1}')
+echo $nparam
+VSH_modeling_for_stars first_order_pix_$name_param $nparam $Nobj $cra $cdec $cpmra $cpmde $cplx $rad $name_file > cor_pix_$name_file

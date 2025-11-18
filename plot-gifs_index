@@ -1,0 +1,137 @@
+#!/bin/bash
+
+INPUTFILE=$1
+PSFILE=$2
+
+x=$3
+y=$4
+z=$5
+minx=$6
+maxx=$7
+miny=$8
+maxy=$9
+minz=${10}
+maxz=${11}
+name_x=${12}
+name_y=${13}
+name_z=${14}
+t=${15}
+tmin=${16}
+tmax=${17}
+tname=${18}
+tmindata=${19}
+dt=${20}
+grid=${21}
+dx=${22}
+dy=${23}
+time=${24}
+
+#i	j	k	R	Theta	X	Y	Z	Vr	Vth	Vx	Vy	Vz
+#./plot-gifs_index res_age_less_1mln_cyl_cs.txt Vrot_R_theta.gif '($4):(-$10)' '($4):((($33-$27)*$4-$51))' 0 20 0 250 R Vrot 2 30 150 theta 90 1 1 10 100 meanVrot OMVrot
+
+
+{
+cat <<GnuplotScript
+#cat <<EOF
+
+#x=${x}
+#y=${y}
+#z=${z}
+
+xmin=${minx}
+xmax=${maxx}
+
+ymin=${miny}
+ymax=${maxy}
+
+zmin=${minz}
+zmax=${maxz}
+
+xname=${name_x}
+yname=${name_y}
+zname=${name_z}
+
+t=${t}
+tmin=${tmin}
+tmax=${tmax}
+tname=${tname}
+tmindata=${tmindata}
+dt=${dt}
+
+grid=${grid}
+
+dx=${dx}
+dy=${dy}
+
+time=${time}
+
+indata = '${INPUTFILE}'
+indata_Sun = "Sun.dat"
+
+set encoding utf8
+if(grid==1){
+            set terminal gif animate delay time loop 0 optimize size 800,600
+            }
+            else{
+            set terminal gif animate delay time loop 0 optimize size 800,300
+            #set size 10.0,4.0
+            }
+#set terminal gif animate delay 5 loop 0 optimize size 800,600
+#set terminal pngcairo enhanced font "Symbola,16.0" size 540,420
+#set terminal epscairo color size 14,11.5 enhanced font "Symbola,36" solid
+#set terminal epslatex standalone
+#set terminal postscript enhanced
+
+
+filetype = ".gif"
+
+set key noautotitle
+set angles degrees
+set view map
+set palette rgbformulae 33,13,10 #30,31,32 #33,13,10
+set xtics 2
+set ytics 2
+set xrange [xmin:xmax]
+set yrange [ymin:ymax]
+set xlabel '${name_x}'
+set ylabel '${name_y}'
+
+set cbrange [zmin:zmax]
+set cblabel '${name_z}'
+
+π = 3.1415926535
+R0 = 8.249
+
+r_max = 24
+r_step = 2
+θ_max = 360
+θ_step = 5
+boxsize = 0.5
+sunsize = 2
+cylcolor = "gray50"
+
+f_r2d(θ) = θ*180/π
+f_polar_x(r,θ) = r*cos(θ)
+f_polar_y(r,θ) = r*sin(θ)
+
+set output '${PSFILE}'
+do for [i=tmin:tmax]{
+
+	set title sprintf("$tname=%f",tmindata+i*dt)
+	if(grid==1){
+	plot sprintf("< awk '{if($%d==%d) print $'0'}' %s", t,i,indata) u $x:$y:$z palette pt 5 ps boxsize,\
+		for [r=0:r_max:r_step] [θ=0:θ_max:θ_step] '+' using (f_polar_x(r,θ)+R0):(f_polar_y(r,θ)) with lines lc rgb cylcolor lw .5, \
+		for [θ=0:θ_max:θ_step] [r=0:r_max:r_step] '+' using (f_polar_x(r,θ)+R0):(f_polar_y(r,θ)) with lines lc rgb cylcolor lw .5, \
+		indata_Sun u 1:2 ps 10 pt 1 lc rgb "black"
+	}else{
+	set xtics dx
+	set ytics dy
+	set grid x
+	set grid y
+	plot sprintf("< awk '{if($%d==%d) print $'0'}' %s", t,i,indata) u $x:$y:$z palette pt 5 ps boxsize,\
+		indata_Sun u 1:2 ps 10 pt 1 lc rgb "black"
+	}
+				
+}
+GnuplotScript
+} | gnuplot 

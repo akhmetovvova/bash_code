@@ -1,0 +1,98 @@
+#!/bin/bash
+
+INPUTFILE1=$1
+INPUTFILE2=$2
+PSFILE=$3
+
+xy1=$4
+xy2=$5
+minx=$6
+maxx=$7
+miny=$8
+maxy=$9
+name_x=${10}
+name_y=${11}
+t=${12}
+tmin=${13}
+tmax=${14}
+tname=${15}
+tmindata=${16}
+dt=${17}
+dx=${18}
+dy=${19}
+time=${20}
+name_legend1=${21}
+name_legend2=${22}
+
+#i	j	k	R	Theta	X	Y	Z	Vr	Vth	Vx	Vy	Vz
+#./plot-gifs_index_due_file res_age_less_1mln_cyl_cs.txt res_age_less_1mln_cyl_cs.txt Vrot_VrotOM_R_theta.gif '($4):(-$10)' '($4):((($33-$27)*$4-$51))' 0 20 0 250 R Vrot 2 30 150 theta 90 1 1 10 100 meanVrot OMVrot
+
+
+{
+cat <<GnuplotScript
+#cat <<EOF
+
+
+xmin=${minx}
+xmax=${maxx}
+
+ymin=${miny}
+ymax=${maxy}
+
+xname=${name_x}
+yname=${name_y}
+
+t=${t}
+tmin=${tmin}
+tmax=${tmax}
+tname=${tname}
+tmindata=${tmindata}
+dt=${dt}
+
+dx=${dx}
+dy=${dy}
+
+time=${time}
+
+indata1 = '${INPUTFILE1}'
+indata2 = '${INPUTFILE2}'
+indata_Sun = "Sun.dat"
+
+set encoding utf8
+set terminal gif animate delay time loop 0 optimize size 800,600
+#set terminal gif animate delay 5 loop 0 optimize size 800,600
+#set terminal pngcairo enhanced font "Symbola,16.0" size 540,420
+#set terminal epscairo color size 14,11.5 enhanced font "Symbola,36" solid
+#set terminal epslatex standalone
+#set terminal postscript enhanced
+#set size 10.0,8
+
+filetype = ".gif"
+
+set key noautotitle
+set xrange [xmin:xmax]
+set yrange [ymin:ymax]
+set xlabel '${name_x}'
+set ylabel '${name_y}'
+
+boxsize = 1
+
+set xtics dx
+set ytics dy
+set grid x
+set grid y
+
+
+set output '${PSFILE}'
+do for [i=tmin:tmax]{
+
+	set title sprintf("$tname=%f",tmindata+i*dt)
+		
+	plot sprintf("< awk '{if($%d==%d) print $'0'}' %s", t,i,indata1) u $xy1 pt 7 lc rgb 'black' title '$name_legend1',\
+		sprintf("< awk '{if($%d==%d) print $'0'}' %s", t,i,indata2) u $xy2 pt 7 lc rgb 'red' title '$name_legend2'				
+}
+GnuplotScript
+} | gnuplot 
+
+#lc rgb 'black' , lc rgb 'red'
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+file=$1              #data file данным
+count=$2              #count delete last rows
+
+tail -n $count "$file" | tee >(wc -c | xargs -I {} truncate "$file" -s -{})

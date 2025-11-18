@@ -1,0 +1,6 @@
+#!/bin/bash
+infile=$1
+n=$2
+col=$3
+
+tail -n $n $infile | cut -f $col

@@ -1,0 +1,170 @@
+#!/bin/bash
+infile=$1
+binfile=$2
+outdir=$3
+
+xmin=$4
+xmax=$5
+ymin=$6
+ymax=$7
+
+res_cl=$8
+res_cl_1d=$9
+
+#create_kinematic_eps_second res_bin_2order_R1.0.txt bin_data_cell_0.5_z0.txt eps_bin_R1 -10 10 -10 10 res_xyz_data_paola_sort_X.txt_R1.0_bin1_dx_0.1dy0.1dz0.1_cs.txt res_1d_xyz_data_paola_sort_X.txt_R1.00_bin1_dx_0.1dy0.1dz0.1_cs.txt 
+
+
+if [ -e Sun.dat ]
+then
+echo "File Sun.dat is exist!"
+else
+echo "0 0" > Sun.dat
+echo "Created Sun.dat file done!"
+fi
+
+
+#1
+#i	j	k	R	Theta	X	Y	Z	Vr	Vth	Vx	Vy	Vz	V	var_Vx	var_Vy	var_Vz	Vx	eVx	Vy	eVy	Vz	eVz	eVz
+#25
+#w1	ew1	w2	ew2	w3	ew3	M23	eM23	M13	eM13	M12	eM12	M11	eM11	M22	eM22	M33	eM33	OM_count	OM_sig
+#45
+#Vr	Vth	Vz	sigVr	sigVth	sigVz	dVrdr	e_dVrdr	dVrdth	e_dVrdth	dVrdz	e_dVrdz	dVthdr	e_dVthdr	dVthdth	e_dVthdth	dVthdz	e_dVthdz
+#61
+#dVzdr	e_dVzdr	dVzdth	e_dVzdth	dVzdz	e_dVzdz	Count
+
+plot-eps_polar $infile ./$outdir/VR_avg.eps 6 7 9 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc VR_{avg},"km s^{-1}"
+plot-eps_polar $infile ./$outdir/Vth_avg.eps 6 7 10 $xmin $xmax $ymin $ymax -250 -180 X,kpc Y,kpc V"{/Symbol q}"_{avg},"km s^{-1}"
+plot-eps_polar $infile ./$outdir/Vz_avg.eps 6 7 13 $xmin $xmax $ymin $ymax -8 8 X,kpc Y,kpc Vz_{avg},"km s^{-1}"
+
+plot-eps_polar $infile ./$outdir/Vx_om.eps 6 7 19 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc Vx_{OM},"km s^{-1}"
+plot-eps_polar $infile ./$outdir/Vy_om.eps 6 7 21 $xmin $xmax $ymin $ymax -250 -180 X,kpc Y,kpc Vy_{OM},"km s^{-1}"
+plot-eps_expl_polar $infile ./$outdir/Vz_om.eps '($6):($7):(-($23))' $xmin $xmax $ymin $ymax -8 8 X,kpc Y,kpc -Vz_{OM},"km s^{-1}"
+
+plot-eps_polar $infile ./$outdir/w1.eps 6 7 25 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc w_1,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/w2.eps 6 7 27 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc w_2,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/w3.eps 6 7 29 $xmin $xmax $ymin $ymax -60 10 X,kpc Y,kpc w_3,"km s^{-1} kpc^{-1}"
+
+plot-eps_polar $infile ./$outdir/M23.eps 6 7 31 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc M_{23},"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/M13.eps 6 7 33 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc M_{13},"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/M12.eps 6 7 35 $xmin $xmax $ymin $ymax 0 20 X,kpc Y,kpc M_{12},"km s^{-1} kpc^{-1}"
+
+plot-eps_polar $infile ./$outdir/M11.eps 6 7 37 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc M_{11},"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/M22.eps 6 7 39 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc M_{22},"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/M33.eps 6 7 41 $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc M_{33},"km s^{-1} kpc^{-1}"
+
+
+plot-eps_polar $infile ./$outdir/VR.eps 6 7 45 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc VR,"km s^{-1}"
+plot-eps_polar $infile ./$outdir/Vtheta.eps 6 7 46 $xmin $xmax $ymin $ymax -250 -180 X,kpc Y,kpc "V_{/Symbol q}","km s^{-1}"
+plot-eps_polar $infile ./$outdir/Vz.eps 6 7 47 $xmin $xmax $ymin $ymax -8 8 X,kpc Y,kpc Vz,"km s^{-1}"
+
+plot-eps_polar $infile ./$outdir/V.eps 6 7 48 $xmin $xmax $ymin $ymax 150 270 X,kpc Y,kpc V,"km s^{-1}"
+
+plot-eps_polar $infile ./$outdir/dVR_dR.eps 6 7 53 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dVR/dR,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/dVR_dtheta.eps 6 7 55 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc dVR/d"{/Symbol q}","km s^{-1}"
+plot-eps_polar $infile ./$outdir/dVR_dz.eps 6 7 57 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dVR/dz,"km s^{-1} kpc^{-1}"
+
+plot-eps_polar $infile ./$outdir/dVtheta_dR.eps 6 7 59 $xmin $xmax $ymin $ymax -30 10 X,kpc Y,kpc dV_"{/Symbol q}"/dR,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/dVtheta_dtheta.eps 6 7 61 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc dV_"{/Symbol q}"/d"{/Symbol q}","km s^{-1}"
+plot-eps_polar $infile ./$outdir/dVtheta_dz.eps 6 7 63 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dV_"{/Symbol q}"/dz,"km s^{-1} kpc^{-1}"
+
+plot-eps_polar $infile ./$outdir/dVz_dR.eps 6 7 65 $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc dVz/dR,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/dVz_dtheta.eps 6 7 67 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc dVz/d"{/Symbol q}","km s^{-1}"
+plot-eps_polar $infile ./$outdir/dVz_dz.eps 6 7 69 $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc dVz/dz,"km s^{-1} kpc^{-1}"
+
+plot-eps_polar $infile ./$outdir/dV_dR.eps 6 7 71 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dV/dR,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/dV_dtheta.eps 6 7 73 $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc dV/d"{/Symbol q}","km s^{-1}"
+plot-eps_polar $infile ./$outdir/dV_dz.eps 6 7 75 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dV/dz,"km s^{-1} kpc^{-1}"
+
+#67
+#d2Vrdrdr\te_d2Vrdrdr\td2Vrdrdth\te_d2Vrdrdth\td2Vrdrdz\te_d2Vrdrdz\td2Vrdthdth\te_d2Vrdthdth\td2Vrdthdz\te_d2Vrdthdz\td2Vrdzdz\te_d2Vrdzdz\t
+
+
+plot-eps_polar $infile ./$outdir/d2VR_dRdR.eps 6 7 77 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}VR/dR^{2},"km s^{-1} kpc^{-2}"
+plot-eps_polar $infile ./$outdir/d2VR_dRdtheta.eps 6 7 79 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}VR/dRd"{/Symbol q}","km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/d2VR_dRdz.eps 6 7 81 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}VR/dRdz,"km s^{-1} kpc^{-2}"
+
+plot-eps_polar $infile ./$outdir/d2VR_dtheta_dtheta.eps 6 7 83 $xmin $xmax $ymin $ymax -100 100 X,kpc Y,kpc d^{2}VR/d"{/Symbol q}^{2}","km s^{-1}"
+plot-eps_polar $infile ./$outdir/d2VR_dtheta_dz.eps 6 7 85 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}VR/d"{/Symbol q}"dz,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/d2VR_dzdz.eps 6 7 87 $xmin $xmax $ymin $ymax -30 30 X,kpc Y,kpc d^{2}VR/dz^{2},"km s^{-1} kpc^{-2}"
+
+#79
+#"d2Vthdrdr\te_d2Vthdrdr\td2Vthdrdth\te_d2Vthdrdth\td2Vthdrdz\te_d2Vthdrdz\td2Vthdthdth\te_d2Vthdthdth\td2Vthdthdz\te_d2Vthdthdz\td2Vthdzdz\te_d2Vthdzdz\t"
+
+plot-eps_polar $infile ./$outdir/d2Vtheta_dRdR.eps 6 7 89 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}V_"{/Symbol q}"/dR^{2},"km s^{-1} kpc^{-2}"
+plot-eps_polar $infile ./$outdir/d2Vtheta_dRdtheta.eps 6 7 91 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}V_"{/Symbol q}"/dRd"{/Symbol q}","km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/d2Vtheta_dRdz.eps 6 7 93 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}V_"{/Symbol q}"/dRdz,"km s^{-1} kpc^{-2}"
+
+plot-eps_polar $infile ./$outdir/d2Vtheta_dthetadtheta.eps 6 7 95 $xmin $xmax $ymin $ymax -100 100 X,kpc Y,kpc d^{2}V_"{/Symbol q}"/d"{/Symbol q}^{2}","km s^{-1}"
+plot-eps_polar $infile ./$outdir/d2Vtheta_dthetadz.eps 6 7 97 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}V_"{/Symbol q}"/d"{/Symbol q}"dz,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/d2Vtheta_dzdz.eps 6 7 99 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}V_"{/Symbol q}"/dz^{2},"km s^{-1} kpc^{-2}"
+
+#"d2Vzdrdr\te_d2Vzdrdr\td2Vzdrdth\te_d2Vzdrdth\td2Vzdrdz\te_d2Vzdrdz\td2Vzdthdth\te_d2Vzdthdth\td2Vzdthdz\te_d2Vzdthdz\td2Vzdzdz\te_d2Vzdzdz\t"
+
+plot-eps_polar $infile ./$outdir/d2Vz_dRdR.eps 6 7 101 $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc d^{2}Vz/dR^{2},"km s^{-1} kpc^{-2}"
+plot-eps_polar $infile ./$outdir/d2Vz_dRdtheta.eps 6 7 103 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}Vz/dRd"{/Symbol q}","km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/d2Vz_dRdz.eps 6 7 105 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}Vz/dRdz,"km s^{-1} kpc^{-2}"
+
+plot-eps_polar $infile ./$outdir/d2Vz_dthetadtheta.eps 6 7 107 $xmin $xmax $ymin $ymax -100 100 X,kpc Y,kpc d^{2}Vz/d"{/Symbol q}^{2}","km s^{-1}"
+plot-eps_polar $infile ./$outdir/d2Vz_dthetadz.eps 6 7 109 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}Vz/d"{/Symbol q}"dz,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/d2Vz_dzdz.eps 6 7 111 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}Vz/dz^{2},"km s^{-1} kpc^{-2}"
+
+#"d2Vdrdr\te_d2Vdrdr\td2Vzdrdth\te_d2Vdrdth\td2Vzdrdz\te_d2Vdrdz\td2Vdthdth\te_d2Vdthdth\td2Vdthdz\te_d2Vdthdz\td2Vdzdz\te_d2Vdzdz\t"
+
+plot-eps_polar $infile ./$outdir/d2V_dRdR.eps 6 7 113 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}V/dR^{2},"km s^{-1} kpc^{-2}"
+plot-eps_polar $infile ./$outdir/d2V_dRdtheta.eps 6 7 115 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}V/dRd"{/Symbol q}","km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/d2V_dRdz.eps 6 7 117 $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}V/dRdz,"km s^{-1} kpc^{-2}"
+
+plot-eps_polar $infile ./$outdir/d2V_dthetadtheta.eps 6 7 119 $xmin $xmax $ymin $ymax -100 100 X,kpc Y,kpc d^{2}V/d"{/Symbol q}^{2}","km s^{-1}"
+plot-eps_polar $infile ./$outdir/d2V_dthetadz.eps 6 7 121 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}V/d"{/Symbol q}"dz,"km s^{-1} kpc^{-1}"
+plot-eps_polar $infile ./$outdir/d2V_dzdz.eps 6 7 123 $xmin $xmax $ymin $ymax -50 50 X,kpc Y,kpc d^{2}V/dz^{2},"km s^{-1} kpc^{-2}"
+
+#combination
+#div V = 𝜕𝑉𝑅/𝜕𝑅 + 1/R*𝜕𝑉𝜃/𝜕𝜃 + 𝜕𝑉z/𝜕z   the volume (size) changing
+plot-eps_expl_polar $infile ./$outdir/divV.eps '($6):($7):($53+$61/$4+$69)' $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc divV,"km s^{-1} kpc^{-1}"
+
+#Δ = 𝜕2𝑉𝑅/𝜕𝑅2 + 𝜕2𝑉𝜃/𝜕𝜃2 + 𝜕2𝑉z/𝜕z2   the  Laplace operator or Laplacian  
+#The same approach implies that the negative of the Laplacian of the gravitational potential is the mass distribution.
+# Often the charge (or mass) distribution are given, and the associated potential is unknown. Finding the potential function subject to suitable boundary conditions is equivalent to solving Poisson's equation. 
+plot-eps_expl_polar $infile ./$outdir/LaplacianV.eps '($6):($7):($77+$95/$4/$4+$111)' $xmin $xmax $ymin $ymax -100 100 X,kpc Y,kpc LaplacianV,"km s^{-1} kpc^{-2}"
+
+
+#𝑉rot = −𝑉𝜃 = (𝑀+12 − 𝜔3)𝑅 − 𝜕𝑉𝑅/𝜕𝜃 
+plot-eps_expl_polar $infile ./$outdir/Vrot_com.eps '($6):($7):(-(($35-$29)*$4-$55))' $xmin $xmax $ymin $ymax -250 -180 X,kpc Y,kpc -Vrot_{oort+dVR/d_"{/Symbol q}"},"km s^{-1}} kpc^{-1}"
+#𝑉rot = −𝑉𝜃 = (𝑀+12 − 𝜔3)𝑅
+plot-eps_expl_polar $infile ./$outdir/Vrot_oort.eps '($6):($7):(-(($35-$29)*$4))' $xmin $xmax $ymin $ymax -250 -180 X,kpc Y,kpc -Vrot_{oort},"km s^{-1}"
+#dVtheta_dr => w3+M12
+plot-eps_expl_polar $infile ./$outdir/dVtheta_dR_om.eps '($6):($7):($29+$35)' $xmin $xmax $ymin $ymax -30 10 X,kpc Y,kpc dV"{/Symbol q}"/dR_{OM},"km s^{-1} kpc^{-1}"
+#dVz_dr => w2-M13
+plot-eps_expl_polar $infile ./$outdir/dVz_dR_om.eps '($6):($7):($27-$33)' $xmin $xmax $ymin $ymax -5 5 X,kpc Y,kpc dVz/dR_{OM},"km s^{-1} kpc^{-1}"
+#-(𝜔1 + 𝑀+23)*R = 𝜕𝑉𝑧 /𝜕𝜃   
+plot-eps_expl_polar $infile ./$outdir/dVz_dtheta_om.eps '($6):($7):(-(($25+$31)*$4))' $xmin $xmax $ymin $ymax -20 20 X,kpc Y,kpc 1/R*dVz/d"{/Symbol q}"_{OM},"km s^{-1} kpc^{-1}"
+#-(𝜔2 + 𝑀+13) = 𝜕𝑉𝑅/𝜕𝑧
+plot-eps_expl_polar $infile ./$outdir/dVR_dz_om.eps '($6):($7):(-($27+$33))' $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dVR/dz_{OM},"km s^{-1} kpc^{-1}"
+#(𝜔1 − 𝑀+23) = 𝜕𝑉𝜃 /𝜕𝑧
+plot-eps_expl_polar $infile ./$outdir/dVtheta_dz_om.eps '($6):($7):($25-$31)' $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc dV_"{/Symbol q}"/dz_{OM},"km s^{-1} kpc^{-1}"
+
+#i	j	k	X	Y	Z	R	Theta	Vx	Vy	Vz	VR	Vtheta	sig_Vx	sig_Vy	sig_Vz	sig_VR	sig_Vtheta	N
+plot-eps_vector_expl $binfile ./$outdir/Vxy.eps '4:5:(($11)/300):(($12)/300):(sqrt(($11)**2+$12**2))' $xmin $xmax $ymin $ymax 180 250 X,kpc Y,kpc Vxy,"km s^{-1}"
+
+plot-eps_vector_expl $binfile ./$outdir/Vxy_s.eps '4:5:(($11-9.5)/300):(($12-250.7)/300):(sqrt(($11-9.5)**2+($12-250.7)**2))' $xmin $xmax $ymin $ymax 180 250 X,kpc Y,kpc Vxy_{SUN},"km s^{-1}}"
+
+plot-eps_contor_spiral_Reid $infile ./$outdir/d2V_dR2_Reid.eps 6 7 '($6):($7):($113)' $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}V/dR^{2},"km s^{-1} kpc^{-2}"
+
+plot-eps_contor_spiral_Hou $infile ./$outdir/d2V_dR2_Hou.eps 6 7 '($6):($7):($113)' $xmin $xmax $ymin $ymax -10 10 X,kpc Y,kpc d^{2}V/dR^{2},"km s^{-1} kpc^{-2}"
+
+plot-gifs_index_symetric_file $res_cl ./$outdir/Vrot_mod_R_sym_theta.gif '($4):(-$46)' 0 18 200 250 R Vrot_{mod} 2 90 150 theta 90 1 1 10 100
+
+plot-gifs_index_symetric_file $res_cl ./$outdir/Vrot_avg_R_sym_theta.gif '($4):(-$10)' 0 18 200 250 R Vrot_{avg} 2 90 150 theta 90 1 1 10 100
+
+plot-gifs_index_symetric_file $res_cl ./$outdir/Vrot_OMdVRdR_R_sym_theta.gif '($4):(($35-$29)*$4-$55)' 0 18 200 250 R Vrot_{OM-dVR/dR} 2 90 150 theta 90 1 1 10 100
+
+plot-gifs_index_symetric_file $res_cl ./$outdir/Vrot_OM_R_sym_theta.gif '($4):(($35-$29)*$4)' 0 18 200 250 R Vrot_{OM} 2 90 150 theta 90 1 1 10 100
+
+plot-1D $res_cl_1d ./$outdir/Vrot_R.eps '($3):(-$7)' '($3):(-$41)' '($3):(($30-$24)*$3)' '($3):(($30-$24)*$3-$50)' 0 18 200 250 R Vrot 2 10 avgVrot Vrot_{mod} Vrot_{OM} Vrot_{OM-dVR/dth} avgByTheta150to210degree
+
+plot-eps_expl_polar_contur $infile ./$outdir/sigVR.eps '($6):($7):($125)' $xmin $xmax $ymin $ymax 0 20 X,kpc Y,kpc "{/Symbol s}"_{VR},"km s^{-1}"
+plot-eps_expl_polar_contur $infile ./$outdir/sigVth.eps '($6):($7):($126)' $xmin $xmax $ymin $ymax 0 20 X,kpc Y,kpc "{/Symbol s}"_{V"{/Symbol q}"},"km s^{-1}"
+plot-eps_expl_polar_contur $infile ./$outdir/sigVz.eps '($6):($7):($127)' $xmin $xmax $ymin $ymax 0 20 X,kpc Y,kpc "{/Symbol s}"_{Vz},"km s^{-1}"
+
+plot-eps_expl_polar_contur $infile ./$outdir/sigOM.eps '($6):($7):($44)' $xmin $xmax $ymin $ymax 0 20 X,kpc Y,kpc "{/Symbol s}"_{OMmodel},"km s^{-1}"
+

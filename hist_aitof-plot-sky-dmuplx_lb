@@ -1,0 +1,26 @@
+#!/bin/bash
+
+INPUTFILE=$1
+
+
+#pixel
+#0.799665	1.488016	1.000000	0.009925	0.044252	-0.008596	0.758150	0.924914	0.815727	2501
+plot_aitof_map pixel_$INPUTFILE mul_$INPUTFILE.png 1 2 6 0.5 1 mul,mas/yr
+plot_aitof_map pixel_$INPUTFILE mub_$INPUTFILE.png 1 2 7 0.5 1 mub,mas/yr
+plot_aitof_map pixel_$INPUTFILE plx_$INPUTFILE.png 1 2 8 0.5 1 plx,mas/yr
+plot_aitof_map pixel_$INPUTFILE sigmul_$INPUTFILE.png 1 2 9 1.5 1 sigmul,mas/yr
+plot_aitof_map pixel_$INPUTFILE sigmub_$INPUTFILE.png 1 2 10 1.5 1 sigmub,mas/yr
+plot_aitof_map pixel_$INPUTFILE sigplx_$INPUTFILE.png 1 2 11 1.5 1 sigplx,mas/yr
+plot_aitof_map pixel_$INPUTFILE density_$INPUTFILE.png 1 2 12 5000 1 Density
+
+#*ZVSH.txt
+#1.0	0.786715	0.002658	3.0870396261	-0.8507183530	1.55114	-2.98772	0.366321	0.901633	-1.07237	-3.19101	1.55251	1.22626	0.889714	20.5711	20.9054	20.0585
+plot_histogram $INPUTFILE plx_eplx_$INPUTFILE.png '$8/$9' -5 5 1 100000 200.0 5 plx/eplx N,count
+plot_histogram $INPUTFILE ruwe_$INPUTFILE.png '$14' 0 5 1 150000 200.0 5 RUWE N,count
+plot_histogram $INPUTFILE gmag_$INPUTFILE.png '$15' 13 22 1 150000 180.0 5 Gmag N,count
+plot_histogram $INPUTFILE bp_rp_$INPUTFILE.png '$16-$17' -1 4 1 100000 200.0 5 G_{BP}-G_{RP} N,count
+
+#power
+#n	T	ET	S	ES	V	EV
+#0	0.000000	0.000000	0.000000	0.000000	0.064658	0.008127
+plot-png-vsh power_harmonics_s5.0_r0.1_$INPUTFILE Gal_power_$INPUTFILE.png 1 2 3 4 5 6 7 -0.2 20.2 1 0 0.1 0.01
