@@ -28,7 +28,7 @@ name_legend3=${23}
 name_title=${24}
 
 
-#plot-1D_3f_error_point res_1d_xyz_data_paola_sort_X.txt_R1.00_bin1_dx_0.1dy0.1dz0.1_cs.txt Vrot_R_err.eps '($3):(-$7)' '($3):(-$7):($11)' '($3):(-$41)' '($3):(-$41):($45)' '($3):(($30-$24)*$3)' '($3):(($30-$24)*$3):(sqrt($31*$31+$25*$25)*$3)' 0 18 200 250 R Vrot 2 10 avgVrot Vrot_{mod} Vrot_{OM} avgTheta150to210degre
+#plot-1D_3f_error_point cor_pmdec_gmag.eps cor_pix_$namefile.txt '($22):($5)' 3d_bin_by_Gmag_cor_$namefile '($4):($9)' '($4):($9):($15)' 3d_bin_by_Gmag_S_cor_$namefile '($4):($9)' '($4):($9):($15)'  3d_bin_by_Gmag_N_cor_$namefile '($4):($9)' '($4):($9):($15)'  14 21 -0.5 0.5 Gmag "{/Symbol m_d}, mas/yr" 1 0.1 All S N "Corrected {/Symbol m_d} from Gmag"
 
 {
 cat <<GnuplotScript
@@ -77,4 +77,3 @@ convert ${PSFILE} ${PSFILE}.png
 
 #epstopdf  ${PSFILE}  --autorotate=All
 #&& acroread $(basename ${PSFILE} .eps).pdf
-
