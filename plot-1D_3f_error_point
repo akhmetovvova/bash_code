@@ -77,3 +77,4 @@ convert ${PSFILE} ${PSFILE}.png
 
 #epstopdf  ${PSFILE}  --autorotate=All
 #&& acroread $(basename ${PSFILE} .eps).pdf
+

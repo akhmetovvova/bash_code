@@ -16,7 +16,7 @@ minz=${13}
 maxz=${14}
 name_z=${15}
 name=${16}
-
+norm_z=${17}
 
 
 #Phi_healpix	Theta_healpix	Phi	Theta	R	Vphi	Vtheta	Vr	sig_Vphi	sig_Vtheta	sig_Vr	Nobjects
@@ -39,6 +39,7 @@ zname=${name_z}
 
 name=${name}
 norm =${norm}
+norm_z=${norm_z}
 
 set encoding utf8
 #set terminal gif animate delay time loop 0 optimize size 800,600
@@ -54,13 +55,27 @@ set palette rgbformulae 33,13,10 #30,31,32 #33,13,10
 
 sc=0.1
 
-wrap(l)  = l < pi ? l : l - 2 * pi
-norma(l,b) =  sqrt(1 + cos(b) * cos(wrap(l) / 2))
-hax(l,b) = cos(b) * sin(wrap(l) / 2) / norma(l,b)
-hay(l,b) = sin(b)/norma(l,b)
+alpha=arccos(cos(b)cos(l/2))
 
-vhax(l,b,ml,mb) = (hax(l+ml*0.00001/cos(b),b+mb*0.00001)-hax(l,b))*100000
-vhay(l,b,ml,mb) = (hay(l+ml*0.00001/cos(b),b+mb*0.00001)-hay(l,b))*100000
+
+
+x=2*sinc_alpha*cos(b)*sin(l/2)​
+
+#wrap(l)  = l < pi ? l : l - 2 * pi
+#norma(l,b) =  sqrt(1 + cos(b) * cos(wrap(l) / 2))
+#hax(l,b) = cos(b) * sin(wrap(l) / 2) / norma(l,b)
+#hay(l,b) = sin(b)/norma(l,b)
+
+#vhax(l,b,ml,mb) = ml*sqrt(1 + cos(wrap(l) / 2)) - 3*mb*sin(b)*sin(wrap(l) / 2)/sqrt(3+cos(b)*cos(wrap(l)/2))
+#vhay(l,b,ml,mb) = (mb + 0.5*ml*sin(b)*sin(wrap(l) / 2)) /norma(l,b)
+
+#for unit vector mb
+#vhax(l,b,ml,mb) = -3*sin(b)*sin(wrap(l)/2)/sqrt(3+cos(b)*cos(wrap(l)/2))
+#vhay(l,b,ml,mb) = sqrt(1 + cos(b)*cos(wrap(l)/2))
+
+#for unit vector ml
+#vhax(l,b,ml,mb) = 1*sqrt(1 + cos(wrap(l) / 2))
+#vhay(l,b,ml,mb) = 0.5*sin(b)*sin(wrap(l) / 2) /sqrt(1+cos(b)*cos(wrap(l)/2))
 
 
 #max(x,y) = x>y?x:y
@@ -92,7 +107,7 @@ set title '${name}'
 #  set border 0
 
 
-plot '${INPUTFILE}' using (180*hax(\$$x,\$$y)):(90*hay(\$$x,\$$y)):(vhax(\$$x,\$$y,\$$vx,\$$vy)*$norm):(vhay(\$$x,\$$y,\$$vx,\$$vy)*$norm):$z with vectors linecolor palette z lw 1.2,\
+plot '${INPUTFILE}' using (180*hax(\$$x,\$$y)):(90*hay(\$$x,\$$y)):(vhax(\$$x,\$$y,\$$vx,\$$vy)*$norm):(vhay(\$$x,\$$y,\$$vx,\$$vy)*$norm):(($z)*$norm_z) with vectors linecolor palette z lw 1.2,\
 '< aitof-grid --xgrid=15deg --ygrid=15deg' using (180*\$1):(90*\$2) with lines lt 1 lc rgb 'black' lw 0.3 notitle
 
 
